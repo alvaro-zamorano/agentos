@@ -1,21 +1,20 @@
 # AgentOS
 
-> **Infraestructura de agentes autónoma y verificable — operativa 24/7 en producción.**  
-> **→ [github.com/Wcoach24/agentos](https://github.com/Wcoach24/agentos)**
+> **Autonomous agent infrastructure with a machine-verifiable Definition of Done — running 24/7 in production.**
 
 ---
 
-## Pitch de 60 segundos
+## The 60-second pitch
 
-**El problema:** La mayoría de los agentes saben *empezar* tareas. Terminarlas bien —con evidencia objetiva de que algo realmente está hecho— es el problema difícil.
+**The problem:** most agents are good at *starting* tasks. Finishing them properly — with objective evidence that something is actually done — is the hard problem.
 
-**La solución:** AgentOS recibe una misión en YAML con un *Definition of Done* comprobable por máquina, la ejecuta en un bucle autónomo `plan → bookkeep → verify → route`, y **solo cierra cuando un verificador independiente** confirma checks objetivos: `http_status`, `file_exists`, `command_exit_zero`, `file_contains`. El agente nunca es juez y parte.
+**The solution:** AgentOS takes a mission as YAML with a machine-checkable *Definition of Done*, runs it through an autonomous `plan → bookkeep → verify → route` loop, and **only closes when an independent verifier** confirms objective checks: `http_status`, `file_exists`, `command_exit_zero`, `file_contains`. The agent is never its own judge.
 
-**En producción ahora mismo** — Mac Mini, 24/7, sin supervisión:
+**In production right now** — Mac Mini, 24/7, unsupervised:
 
 ```
 $ cat state/watcher_heartbeat.txt
-1782051742  2026-06-21T16:22:22  pid=97368     # < 120s = sistema sano
+1782051742  2026-06-21T16:22:22  pid=97368     # < 120s = system healthy
 
 $ ls missions/done/
 2026-06-16-geo-es-dossier/
@@ -25,208 +24,207 @@ $ ls missions/done/
 2026-06-18-agentos-dashboard/
 2026-06-18-spcx-short-watcher/
 2026-06-20-aval-framework-spine/
-# → 7 misiones cerradas de forma autónoma y verificada
+# → 7 missions closed autonomously, all verified
 
 $ tail -3 state/watcher.out.log
-[runner] MISIÓN COMPLETADA: 2026-06-18-agentos-dashboard
-[runner] MISIÓN COMPLETADA: 2026-06-17-test-hello-vercel
-[runner] MISIÓN COMPLETADA: 2026-06-16-geo-es-dossier
+[runner] MISSION COMPLETED: 2026-06-18-agentos-dashboard
+[runner] MISSION COMPLETED: 2026-06-17-test-hello-vercel
+[runner] MISSION COMPLETED: 2026-06-16-geo-es-dossier
 ```
 
-**Para un reclutador:** LangGraph + Claude SDK + launchd daemon, 5 capas desacopladas, end-to-end en producción.  
-**Para un VP Engineering:** verificador independiente (anti reward-hacking), gates GO/NO por Telegram, resumible tras crash via SQLite.  
-**Para un inversor:** cualquier idea → YAML → resultado verificado sin supervisión. La infraestructura que convierte LLMs en trabajadores autónomos reales.
+**For a recruiter:** LangGraph + Claude Agent SDK + launchd daemon, 5 decoupled layers, end-to-end in production.
+**For a VP of Engineering:** independent verifier (anti reward-hacking), GO/NO human gates over Telegram, crash-resumable via SQLite checkpoints.
 
 ---
 
-## Qué es
+## What it is
 
-AgentOS recibe una **misión** (un YAML con objetivo + un *Definition of Done* comprobable) y la lleva sola hasta cerrarla. Cada misión pasa por un bucle:
+AgentOS receives a **mission** (a YAML file with an objective plus a checkable *Definition of Done*) and drives it to completion on its own. Every mission runs through a loop:
 
 ```
 plan  →  bookkeep  →  verify  →  route
 ```
 
-- **plan** — el agente da el siguiente paso real hacia el objetivo (escribe ficheros, despliega, crea repos…).
-- **bookkeep** — lleva la cuenta (coste, vueltas, no-progreso) y aplica topes anti-atasco.
-- **verify** — un **verificador independiente** comprueba el *Definition of Done* con **checks de máquina** (no se fía del agente).
-- **route** — ¿hecho? cierra. ¿gate humano? pide GO/NO por Telegram. ¿ni una cosa ni la otra? otra vuelta, con el feedback del verificador incorporado.
+- **plan** — the agent takes the next real step toward the objective (writes files, deploys, creates repos…).
+- **bookkeep** — tracks cost, iterations and no-progress counters, and applies anti-stall limits.
+- **verify** — an **independent verifier** checks the *Definition of Done* with **machine checks** (it does not trust the agent).
+- **route** — done? close. Human gate needed? ask GO/NO over Telegram. Neither? another loop, with the verifier's feedback fed back in.
 
-## Por qué importa
+## Why it matters
 
-- **El "hecho" no es falseable.** Toda misión exige al menos un check de **máquina** (`file_exists`, `http_status`, `command_exit_zero`, `file_contains`). El juicio de un LLM (`agent_judgment`) puede *sumar* calidad, pero **nunca cierra una misión por sí solo**.
-- **Verificador independiente.** Corre en contexto separado y en modo solo-lectura: no puede tocar los artefactos que juzga (anti reward-hacking). Ver [`orchestrator/verifier.py`](orchestrator/verifier.py).
-- **Autónomo por defecto, humano donde toca.** Solo se detiene a pedir **GO/NO** ante **dinero** o algo **irreversible**. Desplegar a una URL pública, crear un repo de GitHub = autónomo.
-- **No se atasca.** Topes de iteraciones, tiempo de pared, no-progreso y timeout por llamada al SDK garantizan que ninguna misión bloquea el sistema.
-- **Resumible.** Todo el estado vive en checkpoints SQLite; si la máquina se reinicia, retoma donde iba.
+- **"Done" is not fakeable.** Every mission requires at least one **machine** check (`file_exists`, `http_status`, `command_exit_zero`, `file_contains`). LLM judgment (`agent_judgment`) can *add* quality assessment, but **never closes a mission on its own**.
+- **Independent verifier.** Runs in a separate context, read-only: it cannot touch the artifacts it judges (anti reward-hacking). See [`orchestrator/verifier.py`](orchestrator/verifier.py).
+- **Autonomous by default, human where it counts.** It only stops to ask **GO/NO** when facing **money** or something **irreversible**. Deploying to a public URL or creating a GitHub repo = autonomous.
+- **It doesn't get stuck.** Caps on iterations, wall-clock time, no-progress loops and per-SDK-call timeouts guarantee no mission blocks the system.
+- **Resumable.** All state lives in SQLite checkpoints; if the machine reboots, it picks up where it left off.
 
 ---
 
-## Arquitectura
+## Architecture
 
-Cinco capas desacopladas:
+Five decoupled layers:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│  BRIDGES (cómo entra una misión)                            │
+│  BRIDGES (how a mission gets in)                            │
 │  GitHub API  /  Cowork (local)  /  Telegram /idea           │
 └───────────────────────────┬─────────────────────────────────┘
                             ↓  missions/inbox/<id>.yaml
 ┌─────────────────────────────────────────────────────────────┐
-│  WATCHER  (bin/watcher.py, daemon launchd)                  │
-│  Cola serie + prioridad · retoma pausadas · heartbeat       │
+│  WATCHER  (bin/watcher.py, launchd daemon)                  │
+│  Serial priority queue · resumes paused runs · heartbeat    │
 └───────────────────────────┬─────────────────────────────────┘
                             ↓  missions/active/<id>/
 ┌─────────────────────────────────────────────────────────────┐
-│  ORQUESTADOR  (orchestrator/graph.py, LangGraph)            │
+│  ORCHESTRATOR  (orchestrator/graph.py, LangGraph)           │
 │  plan → bookkeep → verify → route                           │
-│  Checkpoints SQLite (resumible tras crash/rate-limit)       │
+│  SQLite checkpoints (resumable after crash/rate-limit)      │
 └──────────┬────────────────┬────────────────────────────────-┘
            ↓                ↓
 ┌──────────────┐   ┌──────────────────────────────────────────┐
-│  MOTOR       │   │  VERIFICADOR  (orchestrator/verifier.py) │
-│  Claude SDK  │   │  Checks de máquina (obligatorios)        │
-│  plan Max    │   │  + agent_judgment (opcional, read-only)  │
-│  sin API key │   │  Sin verde aquí → el grafo no cierra     │
+│  ENGINE      │   │  VERIFIER  (orchestrator/verifier.py)    │
+│  Claude SDK  │   │  Machine checks (mandatory)              │
+│  Max plan,   │   │  + agent_judgment (optional, read-only)  │
+│  no API key  │   │  No green here → the graph won't close   │
 └──────────────┘   └──────────────┬───────────────────────────┘
-                                  ↓  si gate
+                                  ↓  if gated
                    ┌──────────────────────────────────────────┐
                    │  GATES  (orchestrator/gates.py)          │
-                   │  Telegram botones GO/NO · email fallback │
-                   │  interrupt() congela el grafo sin gastar │
+                   │  Telegram GO/NO buttons · email fallback │
+                   │  interrupt() freezes the graph, no spend │
                    └──────────────────────────────────────────┘
 ```
 
-| Capa | Fichero clave | Rol |
+| Layer | Key file | Role |
 |---|---|---|
-| **Watcher** | [`bin/watcher.py`](bin/watcher.py) | Daemon launchd. Vigila la cola, lanza el runner, retoma pausadas, atiende `/idea` de Telegram. |
-| **Orquestador** | [`orchestrator/graph.py`](orchestrator/graph.py) | Grafo LangGraph: `plan → bookkeep → verify → route`. Checkpoints SQLite. |
-| **Motor** | [`orchestrator/engine.py`](orchestrator/engine.py) | Envuelve el Claude Agent SDK. Plan Max (sin API key). Captura coste real. |
-| **Verificador** | [`orchestrator/verifier.py`](orchestrator/verifier.py) | Comprueba el DoD; mezcla checks de máquina (obligatorios) con juicio de modelo (opcional, read-only). |
-| **Gates** | [`orchestrator/gates.py`](orchestrator/gates.py) | GO/NO por Telegram (botones) o email. `interrupt()` congela el grafo sin consumir cuota. |
+| **Watcher** | [`bin/watcher.py`](bin/watcher.py) | launchd daemon. Watches the queue, launches the runner, resumes paused missions, handles Telegram `/idea`. |
+| **Orchestrator** | [`orchestrator/graph.py`](orchestrator/graph.py) | LangGraph graph: `plan → bookkeep → verify → route`. SQLite checkpoints. |
+| **Engine** | [`orchestrator/engine.py`](orchestrator/engine.py) | Wraps the Claude Agent SDK. Max plan (no API key). Captures real cost. |
+| **Verifier** | [`orchestrator/verifier.py`](orchestrator/verifier.py) | Checks the DoD; combines machine checks (mandatory) with model judgment (optional, read-only). |
+| **Gates** | [`orchestrator/gates.py`](orchestrator/gates.py) | GO/NO over Telegram (buttons) or email. `interrupt()` freezes the graph without burning quota. |
 
-### El ciclo de vida de una misión
+### Mission lifecycle
 
 ```
-missions/inbox/<id>.yaml      ← watcher la detecta
-   → missions/active/<id>/   ← runner crea workspace, arranca grafo
-      · gate     → interrupt → Telegram GO/NO → resume
-      · rate-limit → _PAUSED.json + exit 75 → watcher retoma
+missions/inbox/<id>.yaml      ← watcher detects it
+   → missions/active/<id>/   ← runner creates workspace, starts the graph
+      · gate       → interrupt → Telegram GO/NO → resume
+      · rate-limit → _PAUSED.json + exit 75 → watcher resumes later
    → missions/done/<id>/     ← finalize: workspace + _RESULT.json
-   → missions/_processed/    ← yaml archivado; aviso Telegram
+   → missions/_processed/    ← yaml archived; Telegram notification
 ```
 
-El agente trabaja SOLO en su workspace (`missions/active/<id>/`). El entregable se nombra como pide la DoD; el sistema lo mueve a `done/` al cerrar.
+The agent works ONLY inside its workspace (`missions/active/<id>/`). The deliverable is named as the DoD requires; the system moves it to `done/` on close.
 
-### Los 3 bridges
+### The 3 bridges
 
-| Origen | Cómo entra | Para qué |
-|--------|------------|----------|
-| **GitHub API** | commit en `inbox/` → watcher hace pull por API | misiones desde claude.ai sin acceso al Mac |
-| **Cowork (local)** | `bin/new_mission.py` escribe directo en inbox | trabajar la idea con acceso completo al Mac |
-| **Telegram `/idea`** | `bin/dispatcher.py` destila idea→YAML→inbox | rápido, desde el móvil |
+| Source | How it enters | Use case |
+|--------|---------------|----------|
+| **GitHub API** | commit into `inbox/` → watcher pulls via API | missions from claude.ai without Mac access |
+| **Cowork (local)** | `bin/new_mission.py` writes straight to inbox | working an idea with full Mac access |
+| **Telegram `/idea`** | `bin/dispatcher.py` distills idea→YAML→inbox | fast, from the phone |
 
 ---
 
-## Cómo correrlo
+## Running it
 
-### 1. Requisitos
+### 1. Requirements
 
 - Python 3.10+
-- `claude` CLI (Claude Code) con sesión Max activa (login una vez)
-- Token de Telegram (para gates y notificaciones)
-- `gh` CLI autenticado (para el bridge GitHub)
+- `claude` CLI (Claude Code) with an active Max session (login once)
+- Telegram bot token (for gates and notifications)
+- Authenticated `gh` CLI (for the GitHub bridge)
 
-### 2. Instalación
+### 2. Install
 
 ```bash
 git clone https://github.com/Wcoach24/agentos.git
 cd agentos
 
-# Entorno virtual
+# Virtual environment
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-# Credenciales
+# Credentials
 cp .env.example .env
-# Edita .env: TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, GITHUB_REPO, ...
+# Edit .env: TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, GITHUB_REPO, ...
 
-# Login del plan Max (una vez; sin esto el SDK no corre)
+# Max plan login (once; the SDK won't run without it)
 claude
 ```
 
-### 3. Verificar que todo está en orden
+### 3. Sanity checks
 
 ```bash
-python smoke_test.py        # fontanería: TODO VERDE sin gastar crédito
-bash bridge_check.sh        # qué falta para el bridge (git auth, daemon, Telegram)
+python smoke_test.py        # plumbing: ALL GREEN without spending credit
+bash bridge_check.sh        # what's missing for the bridge (git auth, daemon, Telegram)
 ```
 
-### 4. Lanzar el daemon (watcher)
+### 4. Start the daemon (watcher)
 
 ```bash
-bash install_daemon.sh      # instala y arranca el daemon launchd
-tail -f state/watcher.out.log   # logs en tiempo real
+bash install_daemon.sh          # installs and starts the launchd daemon
+tail -f state/watcher.out.log   # live logs
 ```
 
-### 5. Enviar una misión
+### 5. Submit a mission
 
 ```bash
-# Opción A: fichero YAML local
-python bin/new_mission.py missions/ejemplos/hello-world.yaml
+# Option A: local YAML file
+python bin/new_mission.py missions/examples/hello-world.yaml
 
-# Opción B: desde Telegram
-/idea "Publica una landing con el resumen de mi CV en vercel.app"
+# Option B: from Telegram
+/idea "Publish a landing page with my CV summary on vercel.app"
 
-# Opción C: desde claude.ai (bridge git)
-# Escribe la misión en un chat de claude.ai → "continúalo solo" → el Mac la coge
+# Option C: from claude.ai (git bridge)
+# Draft the mission in a claude.ai chat → "continue on your own" → the Mac picks it up
 ```
 
-### 6. Monitorizar
+### 6. Monitor
 
 ```bash
-python dashboard.py                      # estado: inbox / active / done
-tail -f state/watcher.out.log            # logs del daemon
-cat state/watcher_heartbeat.txt          # liveness check (< 120s = sano)
+python dashboard.py                      # status: inbox / active / done
+tail -f state/watcher.out.log            # daemon logs
+cat state/watcher_heartbeat.txt          # liveness check (< 120s = healthy)
 ```
 
 ---
 
-## Formato de misión
+## Mission format
 
 ```yaml
-id: 2026-06-17-landing-esgeo        # slug único con fecha
-title: "Landing esGEO v2"
-objective: "Una frase: qué debe ser verdad al terminar."
-context: "Lo destilado del hilo."
+id: 2026-06-17-landing-esgeo        # unique dated slug
+title: "esGEO landing v2"
+objective: "One sentence: what must be true when this is done."
+context: "Distilled context from the thread."
 done_level: staging                  # staging | production
 
-definition_of_done:                  # >= 1 check de MÁQUINA obligatorio
-  - id: url-viva
-    check: "Responde 200 en su URL pública"
+definition_of_done:                  # >= 1 MACHINE check is mandatory
+  - id: url-live
+    check: "Responds 200 at its public URL"
     verify: { type: http_status, target: "https://x.vercel.app", expected: "200" }
   - id: cta-visible
-    check: "El CTA está en la página"
-    verify: { type: file_contains, target: "index.html", expected: "Solicitar demo" }
+    check: "The CTA is on the page"
+    verify: { type: file_contains, target: "index.html", expected: "Request a demo" }
 
 budget: { max_iterations: 20, credit_usd: 5.0, no_progress_limit: 4, wall_clock_hours: 6 }
 gates: { payment: true, irreversible: true }
 ```
 
-**Tipos de verify:** `file_exists`, `http_status`, `command_exit_zero`, `file_contains` (checks de máquina — obligatorios), y `agent_judgment` (juicio de modelo — opcional, nunca cierra solo).
+**Verify types:** `file_exists`, `http_status`, `command_exit_zero`, `file_contains` (machine checks — mandatory), and `agent_judgment` (model judgment — optional, never closes on its own).
 
 ---
 
-## Evidencia en producción
+## Production evidence
 
-Snapshot tomado el 2026-06-21 del sistema corriendo en el Mac Mini:
+Snapshot taken 2026-06-21 from the system running on the Mac Mini:
 
 ```
-# Watcher vivo (pid 97368 activo, heartbeat < 120s)
+# Watcher alive (pid 97368 active, heartbeat < 120s)
 $ cat state/watcher_heartbeat.txt
 1782051742  2026-06-21T16:22:22  pid=97368
 
-# 7 misiones cerradas autónomamente
+# 7 missions closed autonomously
 $ ls missions/done/
 2026-06-16-geo-es-dossier/
 2026-06-17-catering-connect-foundation/
@@ -236,56 +234,55 @@ $ ls missions/done/
 2026-06-18-spcx-short-watcher/
 2026-06-20-aval-framework-spine/
 
-# Últimas líneas del log del daemon
+# Last lines of the daemon log
 $ tail -3 state/watcher.out.log
-[runner] MISIÓN COMPLETADA: 2026-06-18-agentos-dashboard
-[runner] MISIÓN COMPLETADA: 2026-06-17-test-hello-vercel
-[runner] MISIÓN COMPLETADA: 2026-06-16-geo-es-dossier
+[runner] MISSION COMPLETED: 2026-06-18-agentos-dashboard
+[runner] MISSION COMPLETED: 2026-06-17-test-hello-vercel
+[runner] MISSION COMPLETED: 2026-06-16-geo-es-dossier
 ```
 
-Los ficheros clave que implementan lo descrito arriba:
+Key files implementing everything above:
 
-| Fichero | Qué hace |
-|---------|----------|
-| [`bin/watcher.py`](bin/watcher.py) | Cola, heartbeat, launchd |
-| [`orchestrator/graph.py`](orchestrator/graph.py) | Grafo LangGraph completo |
-| [`orchestrator/verifier.py`](orchestrator/verifier.py) | Todos los tipos de check |
-| [`orchestrator/engine.py`](orchestrator/engine.py) | Wrapper Claude SDK |
-| [`orchestrator/gates.py`](orchestrator/gates.py) | GO/NO por Telegram |
-
----
-
-## Diseño y decisiones
-
-- **¿Por qué serie?** Una misión a la vez protege la cuota Max compartida; el Claude interactivo sigue respondiendo mientras el daemon trabaja en segundo plano.
-- **¿Por qué sin API key?** El SDK usa el token OAuth del plan Max. Cero coste adicional para misiones normales; el daemon se autopausa si toca el límite de uso.
-- **¿Por qué verificador independiente?** Para evitar reward hacking: si el agente pudiera modificar los tests, "pasar" el DoD sería trivial y vacío. El verificador es read-only.
-- **¿Por qué LangGraph + SQLite?** Resumibilidad sin infraestructura. El checkpoint sobrevive reinicios, apagones y rate-limits sin perder progreso.
-- **¿Por qué `ps` y no `pgrep` para el health-check?** En macOS, `pgrep` excluye sus propios procesos ancestros. El watcher es ancestro del verificador, así que `pgrep` da falso negativo. `ps aux | grep watcher` detecta el proceso correctamente.
+| File | What it does |
+|------|--------------|
+| [`bin/watcher.py`](bin/watcher.py) | Queue, heartbeat, launchd |
+| [`orchestrator/graph.py`](orchestrator/graph.py) | Full LangGraph graph |
+| [`orchestrator/verifier.py`](orchestrator/verifier.py) | All check types |
+| [`orchestrator/engine.py`](orchestrator/engine.py) | Claude SDK wrapper |
+| [`orchestrator/gates.py`](orchestrator/gates.py) | GO/NO over Telegram |
 
 ---
 
-## Estado actual
+## Design decisions
 
-- ✅ End-to-end real confirmado en Mac Mini (24/7)
-- ✅ Watcher con heartbeat fiable bajo launchd (KeepAlive)
-- ✅ Verificador independiente + DoD de máquina
-- ✅ Gates por Telegram con botones GO/NO
-- ✅ Idempotencia: cada misión corre exactamente una vez
-- ✅ Re-runs limpios (checkpoint se borra en re-run fresco)
-- ✅ 7 misiones cerradas autónomamente y verificadas
-- ✅ Repo público: [github.com/Wcoach24/agentos](https://github.com/Wcoach24/agentos)
-
-## Hoja de ruta
-
-- Gate nativo por hook del SDK (PreToolUse) para dinero/irreversible
-- Métricas en SQLite (Autonomy Index, DoD pass rate)
-- Verificación anti-Potemkin (Playwright: clic real, no solo HTTP 200)
-- Hash de no-progreso que incluye el veredicto del verificador (anti reward-hacking reforzado)
-- Paralelismo controlado: N misiones simultáneas con cuota compartida
+- **Why serial?** One mission at a time protects the shared Max quota; interactive Claude stays responsive while the daemon works in the background.
+- **Why no API key?** The SDK uses the Max plan's OAuth token. Zero marginal cost for normal missions; the daemon auto-pauses when it hits the usage limit.
+- **Why an independent verifier?** To prevent reward hacking: if the agent could modify the tests, "passing" the DoD would be trivial and meaningless. The verifier is read-only.
+- **Why LangGraph + SQLite?** Resumability without infrastructure. Checkpoints survive reboots, power cuts and rate-limits without losing progress.
+- **Why `ps` and not `pgrep` for the health check?** On macOS, `pgrep` excludes its own ancestor processes. The watcher is an ancestor of the verifier, so `pgrep` returns a false negative. `ps aux | grep watcher` detects the process correctly.
 
 ---
 
-## Licencia
+## Current status
 
-MIT. Construido y operado por [Álvaro](https://github.com/Wcoach24) como infraestructura personal de agentes.
+- ✅ Real end-to-end confirmed on Mac Mini (24/7)
+- ✅ Watcher with reliable heartbeat under launchd (KeepAlive)
+- ✅ Independent verifier + machine-checked DoD
+- ✅ Telegram gates with GO/NO buttons
+- ✅ Idempotency: every mission runs exactly once
+- ✅ Clean re-runs (checkpoint cleared on fresh re-run)
+- ✅ 7 missions closed autonomously and verified
+
+## Roadmap
+
+- Native gating via SDK hook (PreToolUse) for money/irreversible actions
+- Metrics in SQLite (Autonomy Index, DoD pass rate)
+- Anti-Potemkin verification (Playwright: real clicks, not just HTTP 200)
+- No-progress hash that includes the verifier's verdict (hardened anti reward-hacking)
+- Controlled parallelism: N simultaneous missions on shared quota
+
+---
+
+## License
+
+MIT. Built and operated by [Álvaro Zamorano](https://github.com/Wcoach24) as personal agent infrastructure.
