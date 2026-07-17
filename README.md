@@ -138,7 +138,7 @@ The agent works ONLY inside its workspace (`missions/active/<id>/`). The deliver
 ### 2. Install
 
 ```bash
-git clone https://github.com/Wcoach24/agentos.git
+git clone https://github.com/alvaro-zamorano/agentos.git
 cd agentos
 
 # Virtual environment
@@ -285,4 +285,4 @@ Key files implementing everything above:
 
 ## License
 
-MIT. Built and operated by [Álvaro Zamorano](https://github.com/Wcoach24) as personal agent infrastructure.
+MIT. Built and operated by [Álvaro Zamorano](https://github.com/alvaro-zamorano) as personal agent infrastructure.
