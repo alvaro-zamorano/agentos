@@ -1,6 +1,8 @@
 # AgentOS
 
 > **Autonomous agent infrastructure with a machine-verifiable Definition of Done — running 24/7 in production.**
+>
+> 📖 Essay: [*A machine-verifiable Definition of Done for autonomous agents*](docs/machine-verifiable-dod.md)
 
 ---
 
