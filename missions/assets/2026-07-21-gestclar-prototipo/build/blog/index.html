@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Blog y actualidad fiscal — Gestclar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/brand.css">
+  <link rel="stylesheet" href="/assets/nav.css">
+  <style>
+    body { background: #FFFFFF; color: #333333; font-family: 'Inter', sans-serif; margin: 0; padding: 0; }
+    .landing-hero { background: #FFCB00; padding: 4rem 1.5rem 3rem; text-align: center; }
+    .landing-hero h1 { font-family: 'Montserrat', sans-serif; font-size: 2.5rem; font-weight: 700; color: #333333; margin: 0 0 1rem; }
+    .landing-hero .lead { font-size: 1.125rem; color: #333333; max-width: 720px; margin: 0 auto; line-height: 1.7; }
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 1.5rem; }
+    .section { padding: 4rem 1.5rem; }
+    .proximamente-card { max-width: 700px; margin: 0 auto; background: #f9f9f9; border-radius: 12px; padding: 3rem 2.5rem; text-align: center; border: 2px dashed #FFCB00; }
+    .proximamente-card .badge { display: inline-block; background: #FFCB00; color: #333333; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: .875rem; letter-spacing: .05em; text-transform: uppercase; padding: .375rem .875rem; border-radius: 20px; margin-bottom: 1.5rem; }
+    .proximamente-card h2 { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; color: #333333; margin: 0 0 1rem; }
+    .proximamente-card p { font-size: 1rem; color: #555; line-height: 1.7; margin: 0 0 1.25rem; }
+    .proximamente-card .subscribe { background: #FFFFFF; border: 1.5px solid #FFCB00; border-radius: 8px; padding: 1.25rem 1.5rem; margin-top: 1.5rem; }
+    .proximamente-card .subscribe p { font-size: .9375rem; color: #333333; margin: 0; }
+    .proximamente-card .subscribe a { color: #CC3366; font-weight: 600; text-decoration: none; }
+    .proximamente-card .subscribe a:hover { text-decoration: underline; }
+    .topics-section { background: #f9f9f9; padding: 3rem 1.5rem; }
+    .topics-section h2 { font-family: 'Montserrat', sans-serif; font-size: 1.5rem; font-weight: 700; color: #333333; text-align: center; margin-bottom: 2rem; }
+    .topics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; max-width: 900px; margin: 0 auto; }
+    .topic-tag { background: #FFFFFF; border: 1.5px solid #e0e0e0; border-radius: 6px; padding: .75rem 1rem; text-align: center; font-size: .9rem; color: #555; font-weight: 500; }
+    .cta-section { padding: 3rem 1.5rem; text-align: center; }
+    .btn { display: inline-block; padding: .75rem 2rem; border-radius: 4px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 1rem; text-decoration: none; transition: background .2s, color .2s; cursor: pointer; border: none; }
+    .btn-primary { background: #CC3366; color: #FFFFFF; }
+    .btn-primary:hover { background: #a8284f; }
+    @media (max-width: 768px) {
+      .landing-hero h1 { font-size: 1.75rem; }
+      .topics-grid { grid-template-columns: 1fr 1fr; }
+      .proximamente-card { padding: 2rem 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      .topics-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <img src="/assets/img/logo-gestclar.png" alt="Gestclar — Asesoría y Gestoría en Majadahonda" width="120" height="auto">
+    </a>
+    <ul class="nav-links">
+      <li>
+        <button aria-haspopup="true">Servicios <span class="caret"></span></button>
+        <div class="nav-dropdown">
+          <a href="/servicios/asesoria-fiscal/">Asesoría Fiscal</a>
+          <a href="/servicios/asesoria-laboral/">Asesoría Laboral</a>
+          <a href="/servicios/asesoria-contable/">Asesoría Contable</a>
+          <a href="/servicios/gestoria-tramites/">Gestoría de Trámites</a>
+          <a href="/servicios/transferencia-vehiculos/">Transferencia de Vehículos</a>
+          <a href="/servicios/marketing-digital/">Marketing Digital</a>
+        </div>
+      </li>
+      <li>
+        <button aria-haspopup="true">Herramientas <span class="caret"></span></button>
+        <div class="nav-dropdown">
+          <a href="/herramientas/">Ver todas las herramientas</a>
+          <hr class="dropdown-sep">
+          <a href="/herramientas/calculadora-irpf/">Calculadora IRPF</a>
+          <a href="/herramientas/calendario-fiscal/">Calendario Fiscal</a>
+          <a href="/herramientas/simulador-laboral/">Simulador Laboral</a>
+        </div>
+      </li>
+      <li><a href="/blog/">Blog</a></li>
+      <li><a href="/nosotros/">Nosotros</a></li>
+      <li><a href="/contacto/">Contacto</a></li>
+    </ul>
+    <a href="https://gestclar.biloop.es/login" class="nav-cta" target="_blank" rel="noopener">Acceder al portal</a>
+    <button class="nav-hamburger" aria-label="Menú" aria-expanded="false" aria-controls="nav-mobile">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <!-- Mobile drawer -->
+  <div id="nav-mobile" class="nav-mobile" role="navigation">
+    <div class="nav-mobile__group">
+      <span class="nav-mobile__label">Servicios</span>
+      <ul class="nav-mobile__links">
+        <li><a href="/servicios/asesoria-fiscal/">Asesoría Fiscal</a></li>
+        <li><a href="/servicios/asesoria-laboral/">Asesoría Laboral</a></li>
+        <li><a href="/servicios/asesoria-contable/">Asesoría Contable</a></li>
+        <li><a href="/servicios/gestoria-tramites/">Gestoría de Trámites</a></li>
+        <li><a href="/servicios/transferencia-vehiculos/">Transferencia de Vehículos</a></li>
+        <li><a href="/servicios/marketing-digital/">Marketing Digital</a></li>
+      </ul>
+    </div>
+    <div class="nav-mobile__group">
+      <span class="nav-mobile__label">Herramientas</span>
+      <ul class="nav-mobile__links">
+        <li><a href="/herramientas/">Todas las herramientas</a></li>
+        <li><a href="/herramientas/calculadora-irpf/">Calculadora IRPF</a></li>
+        <li><a href="/herramientas/calendario-fiscal/">Calendario Fiscal</a></li>
+        <li><a href="/herramientas/simulador-laboral/">Simulador Laboral</a></li>
+      </ul>
+    </div>
+    <div class="nav-mobile__group">
+      <ul class="nav-mobile__links">
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/nosotros/">Nosotros</a></li>
+        <li><a href="/contacto/">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="nav-mobile__cta">
+      <a href="https://gestclar.biloop.es/login" target="_blank" rel="noopener">Acceder al portal</a>
+    </div>
+  </div>
+</nav>
+<script>
+(function(){
+  var btn = document.querySelector('.nav-hamburger');
+  var drawer = document.getElementById('nav-mobile');
+  if(btn && drawer){
+    btn.addEventListener('click', function(){
+      var open = drawer.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open);
+    });
+  }
+})();
+</script>
+
+<section class="landing-hero">
+  <h1>Blog y actualidad fiscal</h1>
+  <p class="lead">Noticias, novedades fiscales y consejos para autónomos y PYMEs.</p>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="proximamente-card">
+      <div class="badge">Próximamente</div>
+      <h2>Estamos preparando el blog</h2>
+      <p>Estamos trabajando en nuestra sección de blog. Próximamente encontrarás aquí artículos sobre fiscalidad, novedades laborales y consejos para tu negocio.</p>
+      <p>Publicaremos contenido práctico y actualizado para ayudarte a tomar mejores decisiones fiscales y laborales, redactado por nuestro equipo de asesores.</p>
+      <div class="subscribe">
+        <p>¿Quieres que te avisemos cuando publiquemos?<br>Escríbenos a <a href="mailto:asesoria@gestclar.es">asesoria@gestclar.es</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="topics-section">
+  <div class="container">
+    <h2>Temas que trataremos</h2>
+    <div class="topics-grid">
+      <div class="topic-tag">Novedades fiscales</div>
+      <div class="topic-tag">IRPF para autónomos</div>
+      <div class="topic-tag">IVA y modelos trimestrales</div>
+      <div class="topic-tag">Contratación laboral</div>
+      <div class="topic-tag">Seguridad Social</div>
+      <div class="topic-tag">Ayudas y subvenciones</div>
+      <div class="topic-tag">Constitución de empresas</div>
+      <div class="topic-tag">Calendario fiscal</div>
+      <div class="topic-tag">Consejos para PYMEs</div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2 style="font-family:'Montserrat',sans-serif;font-size:1.75rem;font-weight:700;margin-bottom:1rem;">¿Tienes una consulta ahora?</h2>
+    <p style="font-size:1.0625rem;color:#555;margin-bottom:1.5rem;">No esperes al blog. Nuestro equipo te responde directamente.</p>
+    <a href="/contacto/" class="btn btn-primary">Contactar con Gestclar</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <img src="/assets/img/logo-gestclar.png" alt="Gestclar" width="120" style="margin-bottom:1rem;filter:brightness(0)invert(1)">
+        <p style="font-size:.875rem">Asesoría y gestoría en Majadahonda para autónomos y PYMEs.</p>
+        <address style="font-style:normal;font-size:.875rem;margin-top:1rem">
+          C. de Puerto Rico 3 Of.1<br>Majadahonda 28220, Madrid<br>
+          <a href="tel:911094711">911 09 47 11</a><br>
+          <a href="mailto:asesoria@gestclar.es">asesoria@gestclar.es</a>
+        </address>
+      </div>
+      <div>
+        <h4>Servicios</h4>
+        <ul class="footer__links">
+          <li><a href="/servicios/asesoria-fiscal/">Asesoría Fiscal</a></li>
+          <li><a href="/servicios/asesoria-laboral/">Asesoría Laboral</a></li>
+          <li><a href="/servicios/asesoria-contable/">Asesoría Contable</a></li>
+          <li><a href="/servicios/gestoria-tramites/">Gestoría de Trámites</a></li>
+          <li><a href="/servicios/transferencia-vehiculos/">Transferencia de Vehículos</a></li>
+          <li><a href="/servicios/marketing-digital/">Marketing Digital</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Herramientas</h4>
+        <ul class="footer__links">
+          <li><a href="/herramientas/calculadora-irpf/">Calculadora IRPF</a></li>
+          <li><a href="/herramientas/calendario-fiscal/">Calendario Fiscal</a></li>
+          <li><a href="/herramientas/simulador-laboral/">Simulador Laboral</a></li>
+        </ul>
+        <h4 style="margin-top:1.5rem">Empresa</h4>
+        <ul class="footer__links">
+          <li><a href="/nosotros/">Quiénes somos</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/contacto/">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Acceso</h4>
+        <a href="https://gestclar.biloop.es/login" class="btn btn-primary" style="margin-bottom:1rem" target="_blank" rel="noopener">Acceder al portal</a>
+        <ul class="footer__links">
+          <li><a href="/privacidad/">Política de privacidad</a></li>
+          <li><a href="/aviso-legal/">Aviso legal</a></li>
+          <li><a href="/cookies/">Política de cookies</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2024 Gestclar Asesoría y Gestoría. Todos los derechos reservados.</span>
+      <div class="footer__legal">
+        <a href="/privacidad/">Privacidad</a>
+        <a href="/aviso-legal/">Aviso legal</a>
+        <a href="/cookies/">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

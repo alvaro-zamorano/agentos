@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Calendario Fiscal — Gestclar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/brand.css">
+  <link rel="stylesheet" href="/assets/nav.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body, Inter, sans-serif); color: var(--color-text, #333333); background: #ffffff; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* Breadcrumb */
+    .breadcrumb { padding: 1rem 0; font-size: .85rem; color: #666; }
+    .breadcrumb a { color: var(--color-primary, #FFCB00); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 .4rem; color: #aaa; }
+
+    /* Hero */
+    .landing-hero { background: var(--color-bg-light, #f8f8f8); padding: 3.5rem 0 3rem; border-bottom: 3px solid var(--color-primary, #FFCB00); }
+    .landing-hero h1 { font-family: var(--font-heading, Montserrat, sans-serif); font-size: clamp(1.75rem, 4vw, 2.75rem); font-weight: 800; color: var(--color-text, #333333); margin-bottom: 1rem; line-height: 1.2; }
+    .landing-hero .lead { font-size: 1.1rem; color: #555; line-height: 1.75; max-width: 680px; }
+
+    /* Section */
+    .section { padding: 3.5rem 0; }
+
+    /* Calendar grid */
+    .cal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+
+    .cal-card { border-radius: 10px; overflow: hidden; border: 1px solid #e8e8e8; }
+    .cal-card__head { padding: .85rem 1.25rem; font-family: var(--font-heading, Montserrat, sans-serif); font-weight: 700; font-size: .95rem; letter-spacing: .04em; text-transform: uppercase; }
+    .cal-card--q1 .cal-card__head { background: #FFCB00; color: #333; }
+    .cal-card--q2 .cal-card__head { background: #CC3366; color: #fff; }
+    .cal-card--q3 .cal-card__head { background: #1a1a2e; color: #fff; }
+    .cal-card--q4 .cal-card__head { background: #555; color: #fff; }
+    .cal-card--anual .cal-card__head { background: #f0f0f0; color: #333; }
+    .cal-card__body { padding: 1.25rem; background: #fff; }
+    .cal-card__deadline { font-size: .78rem; font-weight: 600; color: var(--color-accent, #CC3366); text-transform: uppercase; letter-spacing: .05em; margin-bottom: .6rem; margin-top: 1rem; }
+    .cal-card__deadline:first-child { margin-top: 0; }
+    .cal-card__items { list-style: none; display: flex; flex-direction: column; gap: .35rem; }
+    .cal-card__items li { font-size: .9rem; color: #555; padding-left: 1rem; position: relative; line-height: 1.5; }
+    .cal-card__items li::before { content: "•"; position: absolute; left: 0; color: var(--color-primary, #FFCB00); font-weight: 700; }
+
+    /* Disclaimer */
+    .disclaimer { font-size: .8rem; color: #888; line-height: 1.6; margin-top: 1.5rem; padding: .75rem 1rem; background: #f8f8f8; border-radius: 6px; border-left: 3px solid #ddd; }
+
+    /* CTA section */
+    .cta-section { background: var(--color-primary, #FFCB00); padding: 3rem 0; text-align: center; }
+    .cta-section h2 { font-family: var(--font-heading, Montserrat, sans-serif); font-size: 1.75rem; font-weight: 800; color: #333; margin-bottom: .75rem; }
+    .cta-section p { color: #555; margin-bottom: 1.5rem; font-size: 1.05rem; }
+    .btn { display: inline-block; padding: .85rem 2rem; border-radius: 6px; font-weight: 600; font-size: 1rem; text-decoration: none; transition: opacity .15s, transform .15s; cursor: pointer; border: none; }
+    .btn:hover { opacity: .9; transform: translateY(-1px); }
+    .btn-dark { background: #333; color: #fff; }
+    .btn-primary { background: var(--color-primary, #FFCB00); color: #333; }
+
+    /* Footer */
+    .footer { background: #1a1a2e; color: #ccc; padding: 3.5rem 0 0; }
+    .footer__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; margin-bottom: 2.5rem; }
+    .footer h4 { font-family: var(--font-heading, Montserrat, sans-serif); font-size: .9rem; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .75rem; }
+    .footer p, .footer address { color: #aaa; }
+    .footer a { color: #aaa; text-decoration: none; }
+    .footer a:hover { color: var(--color-primary, #FFCB00); }
+    .footer__links { list-style: none; display: flex; flex-direction: column; gap: .45rem; font-size: .875rem; }
+    .footer__bottom { border-top: 1px solid #333; padding: 1.25rem 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .75rem; font-size: .8rem; color: #777; }
+    .footer__legal { display: flex; gap: 1.25rem; }
+    .footer__legal a { color: #777; }
+    .footer__legal a:hover { color: var(--color-primary, #FFCB00); }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <img src="/assets/img/logo-gestclar.png" alt="Gestclar — Asesoría y Gestoría en Majadahonda" width="120" height="auto">
+    </a>
+    <ul class="nav-links">
+      <li>
+        <button aria-haspopup="true">Servicios <span class="caret"></span></button>
+        <div class="nav-dropdown">
+          <a href="/servicios/asesoria-fiscal/">Asesoría Fiscal</a>
+          <a href="/servicios/asesoria-laboral/">Asesoría Laboral</a>
+          <a href="/servicios/asesoria-contable/">Asesoría Contable</a>
+          <a href="/servicios/gestoria-tramites/">Gestoría de Trámites</a>
+          <a href="/servicios/transferencia-vehiculos/">Transferencia de Vehículos</a>
+          <a href="/servicios/marketing-digital/">Marketing Digital</a>
+        </div>
+      </li>
+      <li>
+        <button aria-haspopup="true">Herramientas <span class="caret"></span></button>
+        <div class="nav-dropdown">
+          <a href="/herramientas/">Ver todas las herramientas</a>
+          <hr class="dropdown-sep">
+          <a href="/herramientas/calculadora-irpf/">Calculadora IRPF</a>
+          <a href="/herramientas/calendario-fiscal/">Calendario Fiscal</a>
+          <a href="/herramientas/simulador-laboral/">Simulador Laboral</a>
+        </div>
+      </li>
+      <li><a href="/blog/">Blog</a></li>
+      <li><a href="/nosotros/">Nosotros</a></li>
+      <li><a href="/contacto/">Contacto</a></li>
+    </ul>
+    <a href="https://gestclar.biloop.es/login" class="nav-cta" target="_blank" rel="noopener">Acceder al portal</a>
+    <button class="nav-hamburger" aria-label="Menú" aria-expanded="false" aria-controls="nav-mobile">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <!-- Mobile drawer -->
+  <div id="nav-mobile" class="nav-mobile" role="navigation">
+    <div class="nav-mobile__group">
+      <span class="nav-mobile__label">Servicios</span>
+      <ul class="nav-mobile__links">
+        <li><a href="/servicios/asesoria-fiscal/">Asesoría Fiscal</a></li>
+        <li><a href="/servicios/asesoria-laboral/">Asesoría Laboral</a></li>
+        <li><a href="/servicios/asesoria-contable/">Asesoría Contable</a></li>
+        <li><a href="/servicios/gestoria-tramites/">Gestoría de Trámites</a></li>
+        <li><a href="/servicios/transferencia-vehiculos/">Transferencia de Vehículos</a></li>
+        <li><a href="/servicios/marketing-digital/">Marketing Digital</a></li>
+      </ul>
+    </div>
+    <div class="nav-mobile__group">
+      <span class="nav-mobile__label">Herramientas</span>
+      <ul class="nav-mobile__links">
+        <li><a href="/herramientas/">Todas las herramientas</a></li>
+        <li><a href="/herramientas/calculadora-irpf/">Calculadora IRPF</a></li>
+        <li><a href="/herramientas/calendario-fiscal/">Calendario Fiscal</a></li>
+        <li><a href="/herramientas/simulador-laboral/">Simulador Laboral</a></li>
+      </ul>
+    </div>
+    <div class="nav-mobile__group">
+      <ul class="nav-mobile__links">
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/nosotros/">Nosotros</a></li>
+        <li><a href="/contacto/">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="nav-mobile__cta">
+      <a href="https://gestclar.biloop.es/login" target="_blank" rel="noopener">Acceder al portal</a>
+    </div>
+  </div>
+</nav>
+<script>
+(function(){
+  var btn = document.querySelector('.nav-hamburger');
+  var drawer = document.getElementById('nav-mobile');
+  if(btn && drawer){
+    btn.addEventListener('click', function(){
+      var open = drawer.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open);
+    });
+  }
+})();
+</script>
+
+<div class="container">
+  <nav class="breadcrumb" aria-label="Migas de pan">
+    <a href="/">Inicio</a><span>›</span>
+    <a href="/herramientas/">Herramientas</a><span>›</span>
+    Calendario Fiscal
+  </nav>
+</div>
+
+<section class="landing-hero">
+  <div class="container">
+    <h1>Calendario Fiscal</h1>
+    <p class="lead">Las fechas clave de presentación de declaraciones e impuestos para autónomos y empresas en España.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="cal-grid">
+
+      <!-- Q1 -->
+      <div class="cal-card cal-card--q1">
+        <div class="cal-card__head">1.er Trimestre (enero)</div>
+        <div class="cal-card__body">
+          <div class="cal-card__deadline">Hasta el 20 de enero</div>
+          <ul class="cal-card__items">
+            <li>Modelo 111 — Retenciones rendimientos del trabajo</li>
+            <li>Modelo 115 — Retenciones por arrendamiento de inmuebles</li>
+            <li>Modelo 123 — Retenciones sobre capital mobiliario</li>
+            <li>Modelo 130 — Pago fraccionado IRPF (estimación directa)</li>
+            <li>Modelo 131 — Pago fraccionado IRPF (estimación objetiva)</li>
+            <li>Modelo 303 — Autoliquidación IVA</li>
+          </ul>
+          <div class="cal-card__deadline">Hasta el 30 de enero</div>
+          <ul class="cal-card__items">
+            <li>Modelo 390 — Resumen anual IVA</li>
+          </ul>
+          <div class="cal-card__deadline">Hasta el 31 de enero</div>
+          <ul class="cal-card__items">
+            <li>Modelo 180 — Resumen anual retenciones arrendamientos</li>
+            <li>Modelo 190 — Resumen anual retenciones trabajo y actividades</li>
+            <li>Modelo 347 — Operaciones con terceros</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="cal-card cal-card--q2">
+        <div class="cal-card__head">2.º Trimestre (abril)</div>
+        <div class="cal-card__body">
+          <div class="cal-card__deadline">Hasta el 20 de abril</div>
+          <ul class="cal-card__items">
+            <li>Modelo 111 — Retenciones rendimientos del trabajo</li>
+            <li>Modelo 115 — Retenciones por arrendamiento de inmuebles</li>
+            <li>Modelo 123 — Retenciones sobre capital mobiliario</li>
+            <li>Modelo 130 — Pago fraccionado IRPF (estimación directa)</li>
+            <li>Modelo 131 — Pago fraccionado IRPF (estimación objetiva)</li>
+            <li>Modelo 303 — Autoliquidación IVA</li>
+          </ul>
+          <div class="cal-card__deadline">Mayo – Junio</div>
+          <ul class="cal-card__items">
+            <li>Modelo 100 — Declaración de la Renta (IRPF)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="cal-card cal-card--q3">
+        <div class="cal-card__head">3.er Trimestre (julio)</div>
+        <div class="cal-card__body">
+          <div class="cal-card__deadline">Hasta el 20 de julio</div>
+          <ul class="cal-card__items">
+            <li>Modelo 111 — Retenciones rendimientos del trabajo</li>
+            <li>Modelo 115 — Retenciones por arrendamiento de inmuebles</li>
+            <li>Modelo 123 — Retenciones sobre capital mobiliario</li>
+            <li>Modelo 130 — Pago fraccionado IRPF (estimación directa)</li>
+            <li>Modelo 131 — Pago fraccionado IRPF (estimación objetiva)</li>
+            <li>Modelo 303 — Autoliquidación IVA</li>
+          </ul>
+          <div class="cal-card__deadline">Hasta el 25 de julio</div>
+          <ul class="cal-card__items">
+            <li>Modelo 200 — Impuesto de Sociedades (ejercicio anterior)</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="cal-card cal-card--q4">
+        <div class="cal-card__head">4.º Trimestre (octubre)</div>
+        <div class="cal-card__body">
+          <div class="cal-card__deadline">Hasta el 20 de octubre</div>
+          <ul class="cal-card__items">
+            <li>Modelo 111 — Retenciones rendimientos del trabajo</li>
+            <li>Modelo 115 — Retenciones por arrendamiento de inmuebles</li>
+            <li>Modelo 123 — Retenciones sobre capital mobiliario</li>
+            <li>Modelo 130 — Pago fraccionado IRPF (estimación directa)</li>
+            <li>Modelo 131 — Pago fraccionado IRPF (estimación objetiva)</li>
+            <li>Modelo 303 — Autoliquidación IVA</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Anual -->
+      <div class="cal-card cal-card--anual">
+        <div class="cal-card__head">Obligaciones anuales</div>
+        <div class="cal-card__body">
+          <div class="cal-card__deadline">Mayo – Junio</div>
+          <ul class="cal-card__items">
+            <li>Modelo 100 — Declaración de la Renta (IRPF)</li>
+          </ul>
+          <div class="cal-card__deadline">Hasta el 25 de julio</div>
+          <ul class="cal-card__items">
+            <li>Modelo 200 — Impuesto sobre Sociedades</li>
+          </ul>
+          <div class="cal-card__deadline">Hasta el 30 de enero</div>
+          <ul class="cal-card__items">
+            <li>Modelo 390 — Resumen anual IVA</li>
+          </ul>
+          <div class="cal-card__deadline">Hasta el 31 de enero</div>
+          <ul class="cal-card__items">
+            <li>Modelo 180 — Resumen anual retenciones arrendamientos</li>
+            <li>Modelo 190 — Resumen anual retenciones trabajo y actividades</li>
+            <li>Modelo 347 — Operaciones con terceros (más de 3.005,06 €)</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="disclaimer">
+      Las fechas pueden variar si coinciden con festivos nacionales o autonómicos. Consulta siempre el calendario oficial de la AEAT en <a href="https://www.agenciatributaria.es" target="_blank" rel="noopener" style="color:var(--color-accent,#CC3366)">agenciatributaria.es</a>.
+    </p>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2>¿No quieres perder ningún plazo?</h2>
+    <p>Nuestros asesores fiscales gestionan todas tus declaraciones a tiempo para evitar recargos y sanciones.</p>
+    <a href="/contacto/" class="btn btn-dark">Contactar con un asesor</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <img src="/assets/img/logo-gestclar.png" alt="Gestclar" width="120" style="margin-bottom:1rem;filter:brightness(0)invert(1)">
+        <p style="font-size:.875rem">Asesoría y gestoría en Majadahonda para autónomos y PYMEs.</p>
+        <address style="font-style:normal;font-size:.875rem;margin-top:1rem">
+          C. de Puerto Rico 3 Of.1<br>Majadahonda 28220, Madrid<br>
+          <a href="tel:911094711">911 09 47 11</a><br>
+          <a href="mailto:asesoria@gestclar.es">asesoria@gestclar.es</a>
+        </address>
+      </div>
+      <div>
+        <h4>Servicios</h4>
+        <ul class="footer__links">
+          <li><a href="/servicios/asesoria-fiscal/">Asesoría Fiscal</a></li>
+          <li><a href="/servicios/asesoria-laboral/">Asesoría Laboral</a></li>
+          <li><a href="/servicios/asesoria-contable/">Asesoría Contable</a></li>
+          <li><a href="/servicios/gestoria-tramites/">Gestoría de Trámites</a></li>
+          <li><a href="/servicios/transferencia-vehiculos/">Transferencia de Vehículos</a></li>
+          <li><a href="/servicios/marketing-digital/">Marketing Digital</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Herramientas</h4>
+        <ul class="footer__links">
+          <li><a href="/herramientas/calculadora-irpf/">Calculadora IRPF</a></li>
+          <li><a href="/herramientas/calendario-fiscal/">Calendario Fiscal</a></li>
+          <li><a href="/herramientas/simulador-laboral/">Simulador Laboral</a></li>
+        </ul>
+        <h4 style="margin-top:1.5rem">Empresa</h4>
+        <ul class="footer__links">
+          <li><a href="/nosotros/">Quiénes somos</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/contacto/">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Acceso</h4>
+        <a href="https://gestclar.biloop.es/login" class="btn btn-primary" style="margin-bottom:1rem" target="_blank" rel="noopener">Acceder al portal</a>
+        <ul class="footer__links">
+          <li><a href="/privacidad/">Política de privacidad</a></li>
+          <li><a href="/aviso-legal/">Aviso legal</a></li>
+          <li><a href="/cookies/">Política de cookies</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2024 Gestclar Asesoría y Gestoría. Todos los derechos reservados.</span>
+      <div class="footer__legal">
+        <a href="/privacidad/">Privacidad</a>
+        <a href="/aviso-legal/">Aviso legal</a>
+        <a href="/cookies/">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Asesoría Laboral — Gestclar Majadahonda</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/brand.css">
+  <link rel="stylesheet" href="/assets/nav.css">
+  <style>
+    /* Container */
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      padding: 1rem 0;
+      font-size: .875rem;
+      color: #888;
+    }
+    .breadcrumb a {
+      color: #888;
+      text-decoration: none;
+    }
+    .breadcrumb a:hover {
+      color: var(--color-accent, #CC3366);
+    }
+    .breadcrumb span {
+      margin: 0 .4rem;
+    }
+
+    /* Landing hero */
+    .landing-hero {
+      background: var(--color-bg-light, #f8f8f8);
+      border-bottom: 3px solid var(--color-primary, #FFCB00);
+      padding: 3.5rem 0 3rem;
+    }
+    .landing-hero h1 {
+      font-family: var(--font-heading, Montserrat, sans-serif);
+      font-size: clamp(2rem, 4vw, 2.75rem);
+      font-weight: 800;
+      color: var(--color-text, #333333);
+      margin-bottom: 1rem;
+    }
+    .landing-hero .lead {
+      font-size: 1.15rem;
+      color: #555;
+      line-height: 1.7;
+      max-width: 680px;
+    }
+
+    /* Content section */
+    .content-section {
+      padding: 4rem 0;
+    }
+    .content-section h2 {
+      font-family: var(--font-heading, Montserrat, sans-serif);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--color-text, #333333);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Check list */
+    .check-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 2rem;
+    }
+    .check-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      padding: .6rem 0;
+      font-size: 1rem;
+      color: #444;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .check-list li:last-child {
+      border-bottom: none;
+    }
+    .check-list li::before {
+      content: "✓";
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      background: var(--color-primary, #FFCB00);
+      color: #333;
+      border-radius: 50%;
+      font-size: .75rem;
+      font-weight: 700;
+      margin-top: .1rem;
+    }
+
+    /* FAQ */
+    .faq {
+      margin: 2rem 0 3rem;
+    }
+    .faq h2 {
+      font-family: var(--font-heading, Montserrat, sans-serif);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--color-text, #333333);
+      margin-bottom: 1.5rem;
+    }
+    .faq-item {
+      border: 1px solid #e8e8e8;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+    .faq-item__question {
+      padding: 1.1rem 1.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--color-text, #333333);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border: none;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+    }
+    .faq-item__question:hover {
+      background: var(--color-bg-light, #f8f8f8);
+    }
+    .faq-item__question .faq-caret {
+      font-size: .85rem;
+      color: #999;
+      transition: transform .2s;
+    }
+    .faq-item.is-open .faq-caret {
+      transform: rotate(180deg);
+    }
+    .faq-item__answer {
+      display: none;
+      padding: 1rem 1.5rem 1.25rem;
+      font-size: .975rem;
+      color: #555;
+      line-height: 1.7;
+      background: #fafafa;
+      border-top: 1px solid #f0f0f0;
+    }
+    .faq-item.is-open .faq-item__answer {
+      display: block;
+    }
+
+    /* CTA section */
+    .page-cta {
+      background: var(--color-primary, #FFCB00);
+      padding: 3.5rem 0;
+      text-align: center;
+    }
+    .page-cta h2 {
+      font-family: var(--font-heading, Montserrat, sans-serif);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--color-text, #333333);
+      margin-bottom: .75rem;
+    }
+    .page-cta p {
+      color: #444;
+      font-size: 1rem;
+      margin-bottom: 1.75rem;
+    }
+  </style>
+</head>
+<body style="background:#ffffff;margin:0;padding:0;font-family:Inter,sans-serif;color:#333333;">
+
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <img src="/assets/img/logo-gestclar.png" alt="Gestclar — Asesoría y Gestoría en Majadahonda" width="120" height="auto">
+      </a>
+      <ul class="nav-links">
+        <li>
+          <button aria-haspopup="true">Servicios <span class="caret"></span></button>
+          <div class="nav-dropdown">
+            <a href="/servicios/asesoria-fiscal/">Asesoría Fiscal</a>
+            <a href="/servicios/asesoria-laboral/">Asesoría Laboral</a>
+            <a href="/servicios/asesoria-contable/">Asesoría Contable</a>
+            <a href="/servicios/gestoria-tramites/">Gestoría de Trámites</a>
+            <a href="/servicios/transferencia-vehiculos/">Transferencia de Vehículos</a>
+            <a href="/servicios/marketing-digital/">Marketing Digital</a>
+          </div>
+        </li>
+        <li>
+          <button aria-haspopup="true">Herramientas <span class="caret"></span></button>
+          <div class="nav-dropdown">
+            <a href="/herramientas/">Ver todas las herramientas</a>
+            <hr class="dropdown-sep">
+            <a href="/herramientas/calculadora-irpf/">Calculadora IRPF</a>
+            <a href="/herramientas/calendario-fiscal/">Calendario Fiscal</a>
+            <a href="/herramientas/simulador-laboral/">Simulador Laboral</a>
+          </div>
+        </li>
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/nosotros/">Nosotros</a></li>
+        <li><a href="/contacto/">Contacto</a></li>
+      </ul>
+      <a href="https://gestclar.biloop.es/login" class="nav-cta" target="_blank" rel="noopener">Acceder al portal</a>
+      <button class="nav-hamburger" aria-label="Menú" aria-expanded="false" aria-controls="nav-mobile">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <!-- Mobile drawer -->
+    <div id="nav-mobile" class="nav-mobile" role="navigation">
+      <div class="nav-mobile__group">
+        <span class="nav-mobile__label">Servicios</span>
+        <ul class="nav-mobile__links">
+          <li><a href="/servicios/asesoria-fiscal/">Asesoría Fiscal</a></li>
+          <li><a href="/servicios/asesoria-laboral/">Asesoría Laboral</a></li>
+          <li><a href="/servicios/asesoria-contable/">Asesoría Contable</a></li>
+          <li><a href="/servicios/gestoria-tramites/">Gestoría de Trámites</a></li>
+          <li><a href="/servicios/transferencia-vehiculos/">Transferencia de Vehículos</a></li>
+          <li><a href="/servicios/marketing-digital/">Marketing Digital</a></li>
+        </ul>
+      </div>
+      <div class="nav-mobile__group">
+        <span class="nav-mobile__label">Herramientas</span>
+        <ul class="nav-mobile__links">
+          <li><a href="/herramientas/">Todas las herramientas</a></li>
+          <li><a href="/herramientas/calculadora-irpf/">Calculadora IRPF</a></li>
+          <li><a href="/herramientas/calendario-fiscal/">Calendario Fiscal</a></li>
+          <li><a href="/herramientas/simulador-laboral/">Simulador Laboral</a></li>
+        </ul>
+      </div>
+      <div class="nav-mobile__group">
+        <ul class="nav-mobile__links">
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/nosotros/">Nosotros</a></li>
+          <li><a href="/contacto/">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="nav-mobile__cta">
+        <a href="https://gestclar.biloop.es/login" target="_blank" rel="noopener">Acceder al portal</a>
+      </div>
+    </div>
+  </nav>
+  <script>
+  (function(){
+    var btn = document.querySelector('.nav-hamburger');
+    var drawer = document.getElementById('nav-mobile');
+    if(btn && drawer){
+      btn.addEventListener('click', function(){
+        var open = drawer.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', open);
+      });
+    }
+  })();
+  </script>
+
+  <!-- LANDING HERO -->
+  <section class="landing-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Ruta de navegación">
+        <a href="/">Inicio</a>
+        <span aria-hidden="true">›</span>
+        <a href="/servicios/">Servicios</a>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">Asesoría Laboral</span>
+      </nav>
+      <h1>Asesoría Laboral</h1>
+      <p class="lead">Gestión de nóminas, contratos y Seguridad Social para empresas y autónomos en Majadahonda.</p>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+    <div class="content-section">
+
+      <h2>Qué incluye nuestra asesoría laboral</h2>
+      <ul class="check-list">
+        <li>Elaboración de contratos de trabajo</li>
+        <li>Cálculo y emisión de nóminas mensuales</li>
+        <li>Cotizaciones a la Seguridad Social (Cuentas de Cotización)</li>
+        <li>Altas, bajas y variaciones de datos en la Seguridad Social</li>
+        <li>Tramitación de ERTEs y suspensiones de empleo</li>
+        <li>Gestión de incapacidades temporales y accidentes</li>
+        <li>Finiquitos y liquidaciones</li>
+        <li>Representación ante la Inspección de Trabajo</li>
+      </ul>
+
+      <!-- FAQ -->
+      <div class="faq">
+        <h2>Preguntas frecuentes</h2>
+
+        <div class="faq-item is-open">
+          <button class="faq-item__question" aria-expanded="true">
+            ¿Qué plazo tengo para dar de alta a un trabajador?
+            <span class="faq-caret">▼</span>
+          </button>
+          <div class="faq-item__answer">
+            El alta en la Seguridad Social debe realizarse con carácter previo al inicio de la actividad laboral, aunque es posible hacerla el mismo día de inicio.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-item__question" aria-expanded="false">
+            ¿Qué incluye una nómina correctamente elaborada?
+            <span class="faq-caret">▼</span>
+          </button>
+          <div class="faq-item__answer">
+            Una nómina debe incluir los datos del trabajador y empresa, el salario base, los complementos, las deducciones por IRPF y Seguridad Social, y la aportación empresarial a la SS.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-item__question" aria-expanded="false">
+            ¿Cuándo se puede realizar un ERTE?
+            <span class="faq-caret">▼</span>
+          </button>
+          <div class="faq-item__answer">
+            Un ERTE por causas económicas, técnicas, organizativas o de producción se puede solicitar cuando la empresa acredita una reducción persistente de su actividad.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PAGE CTA -->
+  <section class="page-cta">
+    <div class="container">
+      <h2>¿Necesitas ayuda con nóminas o contratos?</h2>
+      <p>Nuestro equipo laboral en Majadahonda resuelve tus dudas sin compromiso.</p>
+      <a href="/contacto/" class="btn btn-primary">Pedir consulta gratuita</a>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <img src="/assets/img/logo-gestclar.png" alt="Gestclar" width="120" style="margin-bottom:1rem;filter:brightness(0)invert(1)">
+          <p style="font-size:.875rem">Asesoría y gestoría en Majadahonda para autónomos y PYMEs.</p>
+          <address style="font-style:normal;font-size:.875rem;margin-top:1rem">
+            C. de Puerto Rico 3 Of.1<br>Majadahonda 28220, Madrid<br>
+            <a href="tel:911094711">911 09 47 11</a><br>
+            <a href="mailto:asesoria@gestclar.es">asesoria@gestclar.es</a>
+          </address>
+        </div>
+        <div>
+          <h4>Servicios</h4>
+          <ul class="footer__links">
+            <li><a href="/servicios/asesoria-fiscal/">Asesoría Fiscal</a></li>
+            <li><a href="/servicios/asesoria-laboral/">Asesoría Laboral</a></li>
+            <li><a href="/servicios/asesoria-contable/">Asesoría Contable</a></li>
+            <li><a href="/servicios/gestoria-tramites/">Gestoría de Trámites</a></li>
+            <li><a href="/servicios/transferencia-vehiculos/">Transferencia de Vehículos</a></li>
+            <li><a href="/servicios/marketing-digital/">Marketing Digital</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Herramientas</h4>
+          <ul class="footer__links">
+            <li><a href="/herramientas/calculadora-irpf/">Calculadora IRPF</a></li>
+            <li><a href="/herramientas/calendario-fiscal/">Calendario Fiscal</a></li>
+            <li><a href="/herramientas/simulador-laboral/">Simulador Laboral</a></li>
+          </ul>
+          <h4 style="margin-top:1.5rem">Empresa</h4>
+          <ul class="footer__links">
+            <li><a href="/nosotros/">Quiénes somos</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/contacto/">Contacto</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Acceso</h4>
+          <a href="https://gestclar.biloop.es/login" class="btn btn-primary" style="margin-bottom:1rem" target="_blank" rel="noopener">Acceder al portal</a>
+          <ul class="footer__links">
+            <li><a href="/privacidad/">Política de privacidad</a></li>
+            <li><a href="/aviso-legal/">Aviso legal</a></li>
+            <li><a href="/cookies/">Política de cookies</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2024 Gestclar Asesoría y Gestoría. Todos los derechos reservados.</span>
+        <div class="footer__legal">
+          <a href="/privacidad/">Privacidad</a>
+          <a href="/aviso-legal/">Aviso legal</a>
+          <a href="/cookies/">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  (function(){
+    var items = document.querySelectorAll('.faq-item');
+    items.forEach(function(item){
+      var btn = item.querySelector('.faq-item__question');
+      if(btn){
+        btn.addEventListener('click', function(){
+          var isOpen = item.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', isOpen);
+        });
+      }
+    });
+  })();
+  </script>
+
+</body>
+</html>

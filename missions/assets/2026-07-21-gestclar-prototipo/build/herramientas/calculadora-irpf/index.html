@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Calculadora IRPF — Gestclar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/brand.css">
+  <link rel="stylesheet" href="/assets/nav.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-body, Inter, sans-serif); color: var(--color-text, #333333); background: #ffffff; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem; }
+
+    /* Breadcrumb */
+    .breadcrumb { padding: 1rem 0; font-size: .85rem; color: #666; }
+    .breadcrumb a { color: var(--color-primary, #FFCB00); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .breadcrumb span { margin: 0 .4rem; color: #aaa; }
+
+    /* Hero */
+    .landing-hero { background: var(--color-bg-light, #f8f8f8); padding: 3.5rem 0 3rem; border-bottom: 3px solid var(--color-primary, #FFCB00); }
+    .landing-hero h1 { font-family: var(--font-heading, Montserrat, sans-serif); font-size: clamp(1.75rem, 4vw, 2.75rem); font-weight: 800; color: var(--color-text, #333333); margin-bottom: 1rem; line-height: 1.2; }
+    .landing-hero .lead { font-size: 1.1rem; color: #555; line-height: 1.75; max-width: 680px; }
+
+    /* Section */
+    .section { padding: 3.5rem 0; }
+
+    /* Calculator */
+    .calc-wrapper { max-width: 640px; }
+    .calc-form { background: #fafafa; border: 1px solid #e8e8e8; border-radius: 10px; padding: 2rem; margin-bottom: 1.5rem; }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; font-weight: 600; font-size: .925rem; margin-bottom: .4rem; color: #444; }
+    .form-group input, .form-group select { width: 100%; padding: .75rem 1rem; border: 1px solid #ddd; border-radius: 6px; font-size: 1rem; font-family: inherit; color: #333; background: #fff; transition: border-color .15s; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--color-primary, #FFCB00); box-shadow: 0 0 0 3px rgba(255,203,0,.2); }
+    .calc-btn { width: 100%; padding: .9rem; background: var(--color-accent, #CC3366); color: #fff; border: none; border-radius: 6px; font-size: 1.05rem; font-weight: 700; font-family: inherit; cursor: pointer; transition: background .15s, transform .1s; }
+    .calc-btn:hover { background: #b02257; transform: translateY(-1px); }
+    .calc-btn:active { transform: translateY(0); }
+
+    /* Results */
+    .calc-results { display: none; background: #fff; border: 2px solid var(--color-primary, #FFCB00); border-radius: 10px; padding: 1.75rem; }
+    .calc-results.is-visible { display: block; }
+    .calc-results h3 { font-family: var(--font-heading, Montserrat, sans-serif); font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem; color: #333; }
+    .result-row { display: flex; justify-content: space-between; align-items: center; padding: .6rem 0; border-bottom: 1px solid #f0f0f0; font-size: .975rem; }
+    .result-row:last-child { border-bottom: none; }
+    .result-row .label { color: #666; }
+    .result-row .value { font-weight: 600; color: #333; }
+    .result-row.highlight .value { color: var(--color-accent, #CC3366); font-size: 1.15rem; }
+    .result-row.highlight .label { font-weight: 600; color: #333; }
+
+    /* Disclaimer */
+    .disclaimer { font-size: .8rem; color: #888; line-height: 1.6; margin-top: 1rem; padding: .75rem 1rem; background: #f8f8f8; border-radius: 6px; border-left: 3px solid #ddd; }
+
+    /* Tramos table */
+    .tramos-section { margin-top: 3rem; }
+    .tramos-section h2 { font-family: var(--font-heading, Montserrat, sans-serif); font-size: 1.35rem; font-weight: 700; margin-bottom: 1rem; color: #333; }
+    .tramos-table { width: 100%; max-width: 500px; border-collapse: collapse; font-size: .9rem; }
+    .tramos-table th { background: #333; color: #fff; padding: .6rem .9rem; text-align: left; font-weight: 600; }
+    .tramos-table td { padding: .55rem .9rem; border-bottom: 1px solid #eee; }
+    .tramos-table tr:nth-child(even) td { background: #fafafa; }
+    .tramos-table .rate { font-weight: 700; color: var(--color-accent, #CC3366); }
+
+    /* CTA section */
+    .cta-section { background: var(--color-primary, #FFCB00); padding: 3rem 0; text-align: center; margin-top: 3rem; }
+    .cta-section h2 { font-family: var(--font-heading, Montserrat, sans-serif); font-size: 1.75rem; font-weight: 800; color: #333; margin-bottom: .75rem; }
+    .cta-section p { color: #555; margin-bottom: 1.5rem; font-size: 1.05rem; }
+    .btn { display: inline-block; padding: .85rem 2rem; border-radius: 6px; font-weight: 600; font-size: 1rem; text-decoration: none; transition: opacity .15s, transform .15s; cursor: pointer; border: none; }
+    .btn:hover { opacity: .9; transform: translateY(-1px); }
+    .btn-dark { background: #333; color: #fff; }
+    .btn-primary { background: var(--color-primary, #FFCB00); color: #333; }
+
+    /* Footer */
+    .footer { background: #1a1a2e; color: #ccc; padding: 3.5rem 0 0; }
+    .footer__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; margin-bottom: 2.5rem; }
+    .footer h4 { font-family: var(--font-heading, Montserrat, sans-serif); font-size: .9rem; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .75rem; }
+    .footer p, .footer address { color: #aaa; }
+    .footer a { color: #aaa; text-decoration: none; }
+    .footer a:hover { color: var(--color-primary, #FFCB00); }
+    .footer__links { list-style: none; display: flex; flex-direction: column; gap: .45rem; font-size: .875rem; }
+    .footer__bottom { border-top: 1px solid #333; padding: 1.25rem 0; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .75rem; font-size: .8rem; color: #777; }
+    .footer__legal { display: flex; gap: 1.25rem; }
+    .footer__legal a { color: #777; }
+    .footer__legal a:hover { color: var(--color-primary, #FFCB00); }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">
+      <img src="/assets/img/logo-gestclar.png" alt="Gestclar — Asesoría y Gestoría en Majadahonda" width="120" height="auto">
+    </a>
+    <ul class="nav-links">
+      <li>
+        <button aria-haspopup="true">Servicios <span class="caret"></span></button>
+        <div class="nav-dropdown">
+          <a href="/servicios/asesoria-fiscal/">Asesoría Fiscal</a>
+          <a href="/servicios/asesoria-laboral/">Asesoría Laboral</a>
+          <a href="/servicios/asesoria-contable/">Asesoría Contable</a>
+          <a href="/servicios/gestoria-tramites/">Gestoría de Trámites</a>
+          <a href="/servicios/transferencia-vehiculos/">Transferencia de Vehículos</a>
+          <a href="/servicios/marketing-digital/">Marketing Digital</a>
+        </div>
+      </li>
+      <li>
+        <button aria-haspopup="true">Herramientas <span class="caret"></span></button>
+        <div class="nav-dropdown">
+          <a href="/herramientas/">Ver todas las herramientas</a>
+          <hr class="dropdown-sep">
+          <a href="/herramientas/calculadora-irpf/">Calculadora IRPF</a>
+          <a href="/herramientas/calendario-fiscal/">Calendario Fiscal</a>
+          <a href="/herramientas/simulador-laboral/">Simulador Laboral</a>
+        </div>
+      </li>
+      <li><a href="/blog/">Blog</a></li>
+      <li><a href="/nosotros/">Nosotros</a></li>
+      <li><a href="/contacto/">Contacto</a></li>
+    </ul>
+    <a href="https://gestclar.biloop.es/login" class="nav-cta" target="_blank" rel="noopener">Acceder al portal</a>
+    <button class="nav-hamburger" aria-label="Menú" aria-expanded="false" aria-controls="nav-mobile">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <!-- Mobile drawer -->
+  <div id="nav-mobile" class="nav-mobile" role="navigation">
+    <div class="nav-mobile__group">
+      <span class="nav-mobile__label">Servicios</span>
+      <ul class="nav-mobile__links">
+        <li><a href="/servicios/asesoria-fiscal/">Asesoría Fiscal</a></li>
+        <li><a href="/servicios/asesoria-laboral/">Asesoría Laboral</a></li>
+        <li><a href="/servicios/asesoria-contable/">Asesoría Contable</a></li>
+        <li><a href="/servicios/gestoria-tramites/">Gestoría de Trámites</a></li>
+        <li><a href="/servicios/transferencia-vehiculos/">Transferencia de Vehículos</a></li>
+        <li><a href="/servicios/marketing-digital/">Marketing Digital</a></li>
+      </ul>
+    </div>
+    <div class="nav-mobile__group">
+      <span class="nav-mobile__label">Herramientas</span>
+      <ul class="nav-mobile__links">
+        <li><a href="/herramientas/">Todas las herramientas</a></li>
+        <li><a href="/herramientas/calculadora-irpf/">Calculadora IRPF</a></li>
+        <li><a href="/herramientas/calendario-fiscal/">Calendario Fiscal</a></li>
+        <li><a href="/herramientas/simulador-laboral/">Simulador Laboral</a></li>
+      </ul>
+    </div>
+    <div class="nav-mobile__group">
+      <ul class="nav-mobile__links">
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/nosotros/">Nosotros</a></li>
+        <li><a href="/contacto/">Contacto</a></li>
+      </ul>
+    </div>
+    <div class="nav-mobile__cta">
+      <a href="https://gestclar.biloop.es/login" target="_blank" rel="noopener">Acceder al portal</a>
+    </div>
+  </div>
+</nav>
+<script>
+(function(){
+  var btn = document.querySelector('.nav-hamburger');
+  var drawer = document.getElementById('nav-mobile');
+  if(btn && drawer){
+    btn.addEventListener('click', function(){
+      var open = drawer.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', open);
+    });
+  }
+})();
+</script>
+
+<div class="container">
+  <nav class="breadcrumb" aria-label="Migas de pan">
+    <a href="/">Inicio</a><span>›</span>
+    <a href="/herramientas/">Herramientas</a><span>›</span>
+    Calculadora IRPF
+  </nav>
+</div>
+
+<section class="landing-hero">
+  <div class="container">
+    <h1>Calculadora IRPF</h1>
+    <p class="lead">Estima tu cuota de IRPF anual en función de tus rendimientos del trabajo o actividad económica.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="calc-wrapper">
+      <div class="calc-form">
+        <div class="form-group">
+          <label for="ingresos">Ingresos brutos anuales (€)</label>
+          <input type="number" id="ingresos" placeholder="Ej: 35000" min="0" step="100">
+        </div>
+        <div class="form-group">
+          <label for="gastos">Gastos deducibles (€)</label>
+          <input type="number" id="gastos" placeholder="Ej: 2000" min="0" step="100">
+        </div>
+        <div class="form-group">
+          <label for="situacion">Situación personal</label>
+          <select id="situacion">
+            <option value="soltero">Soltero/a</option>
+            <option value="casado">Casado/a o unión de pareja</option>
+            <option value="familia-numerosa">Familia numerosa</option>
+          </select>
+        </div>
+        <button class="calc-btn" id="calc-btn" type="button">Calcular</button>
+      </div>
+
+      <div class="calc-results" id="calc-results">
+        <h3>Resultado estimado</h3>
+        <div class="result-row">
+          <span class="label">Ingresos brutos</span>
+          <span class="value" id="res-bruto">—</span>
+        </div>
+        <div class="result-row">
+          <span class="label">Gastos deducibles</span>
+          <span class="value" id="res-gastos">—</span>
+        </div>
+        <div class="result-row">
+          <span class="label">Base liquidable</span>
+          <span class="value" id="res-base">—</span>
+        </div>
+        <div class="result-row highlight">
+          <span class="label">Cuota IRPF estimada</span>
+          <span class="value" id="res-cuota">—</span>
+        </div>
+        <div class="result-row">
+          <span class="label">Tipo efectivo</span>
+          <span class="value" id="res-tipo">—</span>
+        </div>
+      </div>
+
+      <p class="disclaimer">
+        Este cálculo es orientativo y no tiene en cuenta todas las deducciones y circunstancias personales aplicables. Consulta con un asesor fiscal para un cálculo preciso.
+      </p>
+
+      <div class="tramos-section">
+        <h2>Tramos IRPF 2024 (escala estatal + autonómica orientativa)</h2>
+        <table class="tramos-table">
+          <thead>
+            <tr>
+              <th>Base liquidable</th>
+              <th>Tipo marginal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Hasta 12.450 €</td><td class="rate">19 %</td></tr>
+            <tr><td>12.450 € – 20.200 €</td><td class="rate">24 %</td></tr>
+            <tr><td>20.200 € – 35.200 €</td><td class="rate">30 %</td></tr>
+            <tr><td>35.200 € – 60.000 €</td><td class="rate">37 %</td></tr>
+            <tr><td>60.000 € – 300.000 €</td><td class="rate">45 %</td></tr>
+            <tr><td>Más de 300.000 €</td><td class="rate">47 %</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2>¿Quieres optimizar tu IRPF?</h2>
+    <p>Nuestros asesores fiscales analizan tu caso para minimizar tu carga impositiva de forma legal.</p>
+    <a href="/contacto/" class="btn btn-dark">Contactar con un asesor</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div>
+        <img src="/assets/img/logo-gestclar.png" alt="Gestclar" width="120" style="margin-bottom:1rem;filter:brightness(0)invert(1)">
+        <p style="font-size:.875rem">Asesoría y gestoría en Majadahonda para autónomos y PYMEs.</p>
+        <address style="font-style:normal;font-size:.875rem;margin-top:1rem">
+          C. de Puerto Rico 3 Of.1<br>Majadahonda 28220, Madrid<br>
+          <a href="tel:911094711">911 09 47 11</a><br>
+          <a href="mailto:asesoria@gestclar.es">asesoria@gestclar.es</a>
+        </address>
+      </div>
+      <div>
+        <h4>Servicios</h4>
+        <ul class="footer__links">
+          <li><a href="/servicios/asesoria-fiscal/">Asesoría Fiscal</a></li>
+          <li><a href="/servicios/asesoria-laboral/">Asesoría Laboral</a></li>
+          <li><a href="/servicios/asesoria-contable/">Asesoría Contable</a></li>
+          <li><a href="/servicios/gestoria-tramites/">Gestoría de Trámites</a></li>
+          <li><a href="/servicios/transferencia-vehiculos/">Transferencia de Vehículos</a></li>
+          <li><a href="/servicios/marketing-digital/">Marketing Digital</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Herramientas</h4>
+        <ul class="footer__links">
+          <li><a href="/herramientas/calculadora-irpf/">Calculadora IRPF</a></li>
+          <li><a href="/herramientas/calendario-fiscal/">Calendario Fiscal</a></li>
+          <li><a href="/herramientas/simulador-laboral/">Simulador Laboral</a></li>
+        </ul>
+        <h4 style="margin-top:1.5rem">Empresa</h4>
+        <ul class="footer__links">
+          <li><a href="/nosotros/">Quiénes somos</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/contacto/">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Acceso</h4>
+        <a href="https://gestclar.biloop.es/login" class="btn btn-primary" style="margin-bottom:1rem" target="_blank" rel="noopener">Acceder al portal</a>
+        <ul class="footer__links">
+          <li><a href="/privacidad/">Política de privacidad</a></li>
+          <li><a href="/aviso-legal/">Aviso legal</a></li>
+          <li><a href="/cookies/">Política de cookies</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© 2024 Gestclar Asesoría y Gestoría. Todos los derechos reservados.</span>
+      <div class="footer__legal">
+        <a href="/privacidad/">Privacidad</a>
+        <a href="/aviso-legal/">Aviso legal</a>
+        <a href="/cookies/">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // IRPF 2024 brackets (combined state + average autonomous community rate)
+  var brackets = [
+    { limit: 12450,   rate: 0.19 },
+    { limit: 20200,   rate: 0.24 },
+    { limit: 35200,   rate: 0.30 },
+    { limit: 60000,   rate: 0.37 },
+    { limit: 300000,  rate: 0.45 },
+    { limit: Infinity, rate: 0.47 }
+  ];
+
+  // Personal minimum reduction (mínimo del contribuyente) — applies before tax
+  var minPersonal = {
+    'soltero': 5550,
+    'casado': 5550,
+    'familia-numerosa': 5550
+  };
+
+  function calcIRPF(base) {
+    var cuota = 0;
+    var prev = 0;
+    for (var i = 0; i < brackets.length; i++) {
+      if (base <= prev) break;
+      var tramo = Math.min(base, brackets[i].limit) - prev;
+      cuota += tramo * brackets[i].rate;
+      prev = brackets[i].limit;
+    }
+    return cuota;
+  }
+
+  function fmt(n) {
+    return n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+  }
+
+  document.getElementById('calc-btn').addEventListener('click', function () {
+    var ingresos = parseFloat(document.getElementById('ingresos').value) || 0;
+    var gastos   = parseFloat(document.getElementById('gastos').value) || 0;
+    var situacion = document.getElementById('situacion').value;
+
+    if (ingresos <= 0) {
+      alert('Introduce unos ingresos brutos válidos.');
+      return;
+    }
+
+    var reduccion = minPersonal[situacion] || 5550;
+    var baseLiquidable = Math.max(0, ingresos - gastos - reduccion);
+    var cuotaTotal = calcIRPF(baseLiquidable);
+    var tipoEfectivo = ingresos > 0 ? (cuotaTotal / ingresos) * 100 : 0;
+
+    document.getElementById('res-bruto').textContent  = fmt(ingresos);
+    document.getElementById('res-gastos').textContent = fmt(gastos);
+    document.getElementById('res-base').textContent   = fmt(baseLiquidable);
+    document.getElementById('res-cuota').textContent  = fmt(cuotaTotal);
+    document.getElementById('res-tipo').textContent   = tipoEfectivo.toFixed(2) + ' %';
+
+    var results = document.getElementById('calc-results');
+    results.classList.add('is-visible');
+    results.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+})();
+</script>
+
+</body>
+</html>
