@@ -495,3 +495,234 @@ login` en el Mac (o un PAT separado). El PAT del pipeline queda solo para alvaro
     deja nota, el operador recarga aparte.
 Pendiente: re-sync (daemon idle -> seguro) aplica idempotencia + checkpoint-limpio + anti-TCC
 + anti-suicidio + curl-schema; luego retry de M0 (ya con gh auth + repo creado) corre limpia.
+
+---
+
+## Stream de logs en vivo del SDK (2026-06-21, run 21)
+
+65. **Tabla agentos_logs + control.push_log()** (creada vía curl; añadida a SCHEMA_SQL). RLS:
+    anon SELECT (dashboard lee), escribe el daemon con service key.
+66. **Instrumentación del bucle:** node_plan publica la SALIDA REAL del SDK cada vuelta
+    (level=step, con iteración); node_verify publica el resultado del DoD; runner publica
+    start/done/abort/pause. = "ver el SDK en directo".
+67. **Dashboard: panel 'Log en vivo · el SDK paso a paso'** (lee agentos_logs, auto-refresh 5s,
+    coloreado por nivel). Desplegado.
+La tabla + el panel están vivos YA; el PUSH de eventos se activa en el próximo re-sync (la
+instrumentación va en el código). NO re-sincronizar mientras M0 corra (la abortaría).
+
+---
+
+## Auto-update del daemon (2026-06-21, run 22)
+
+68. **_self_update() en el watcher (SELF_UPDATE=1).** Cuando está IDLE, rsync -a del código
+    desde SELF_UPDATE_SRC (~/Desktop/os/agent-os) hacia ~/agentos (excluye state/missions/.venv/
+    .git); si cambió algún .py y COMPILA, se re-lanza (os.execv) con el código nuevo. Guardas:
+    fuente válida (anti --delete fatal), compile-check (no recarga en estado roto), -a preserva
+    mtimes (no bucle de re-exec). Verificado (5 casos). Requiere Acceso a Disco Completo si la
+    fuente está en ~/Desktop (TCC). .env: SELF_UPDATE=1 + SELF_UPDATE_SRC.
+    => Tras un último deploy_runtime.sh + FDA, no hace falta re-sincronizar nunca más.
+
+---
+
+## Auditoría de loops atascados + arreglo del verificador (2026-06-27, run 23)
+
+Síntoma de Álvaro: "funciona pero no puedo comprobar resultados y algunos loops se quedan
+pillados". Auditoría de toda la telemetría -> patrón único y causa raíz:
+
+69. **CAUSA RAÍZ: el `agent_judgment` bloqueaba el cierre como un check duro.** verifier.py
+    hacía `all_ok = all(r.passed)` incluyendo el juicio del juez. Pero la calidad es
+    subjetiva -> el juez decía FAIL y la misión daba vueltas infinitas aunque TODOS los
+    checks de máquina pasaran. Evidencia: aval-v2 (8/8 máquina, sitio vivo) murió por el
+    timeout de 2h del watcher tras dar vueltas en el juez ($13.28); aval-landing agotó
+    iteraciones ($9.30); tetris 4/6. Y el juez corre OPUS en cada vuelta -> de ahí el gasto.
+    FIX: el juez pasa a ASESOR. `verify_dod` devuelve `machine_ok` (los checks de máquina son
+    la puerta); el juez solo se ejecuta cuando lo de máquina ya pasa (una vez, no cada vuelta),
+    informa calidad como nota, y NUNCA bloquea. Alinea la lógica con lo que ya decían las
+    rúbricas ("suma calidad, NO cierra sola"). Verificado (2 casos + smoke).
+70. **http_status con reintentos (3x, backoff 6s).** Un deploy recién hecho tarda en propagar;
+    el check fallaba a la primera aunque la URL subiera (caso tetris url-publica-200).
+71. **Lección de DoD frágil:** el check de aval-landing `grep "AI Act"` probablemente falló
+    porque la landing en español dice "ley de IA", no el literal inglés. Los checks de máquina
+    no deben depender de una palabra exacta en otro idioma -> regla para el mission-planner.
+
+Hallazgo operativo: agentos_logs VACÍO -> push_log (run 21) y self-update (run 22) NUNCA se
+desplegaron (sin re-sync desde run 20). Por eso Álvaro "no puede ver/comprobar": el log en
+vivo no está activo. Un re-sync enciende: este fix del verificador + log en vivo + self-update.
+Lo que SÍ funciona: catering-encuesta (4/4, 1 vuelta) y geo (4/4). El núcleo va; fallaban el
+juez-loop y checks frágiles, no AgentOS.
+
+---
+
+## v1.1.0 — Blindaje + autonomía + aprendizaje (2026-07-01/02, run 24, vía Cowork+GSD)
+
+Research previo: MoneyPrinterTurbo, OpenHands StuckDetector, Reflexion, goose/OpenClaw
+memory, docs del Agent SDK. Auditoría con verificación EN VIVO (Supabase) como baseline.
+
+72. **stuckdetect.py (NUEVO): detector de atasco multi-patrón.** Sustituye a _hash_state
+    (que NO detectó el bucle de aval-landing: 15x "[SDK ERROR]" = $9.30). Patrones:
+    error_streak>=2, repeat_action (firma normalizada: invariante a números/urls/uuids),
+    ping_pong A/B x3. 1ª detección -> REPLAN automático (stuck_note al prompt, ventana
+    fresca); 2ª -> abort. Tests unitarios en tests/test_v11.py (incluye el caso aval).
+73. **engine: retry clasificado de errores SDK.** rate-limit -> pausa (como antes);
+    TRANSITORIO de red/infra sin texto producido -> backoff 20/45/90s+jitter, máx 2
+    reintentos DENTRO de la vuelta (no quema iteración); timeout 900s -> NO retry (cuelgue
+    probable). Un blip de red ya no empuja misiones al aborto.
+74. **AUT-01 Reflexion: auto-retry con estrategia revisada (aprobado global).** Aborto
+    retryable (iteraciones/atasco/tiempo) en intento 1 -> post-mortem LLM {root_cause,
+    avoid, new_strategy} (_POSTMORTEM.json) -> el watcher re-encola attempt=2 con contexto
+    FRESCO + post-mortem inyectado (priority 10, done/<id>-attempt1 conservado). Telegram
+    solo molesta si el 2º intento también cae. Gate rechazado/abort humano NO se reintentan.
+75. **LRN lessons.py (NUEVO): aprendizaje entre misiones.** Al cerrar (done o aborted):
+    <=3 lecciones destiladas a state/lessons/*.md con frontmatter triggers; al arrancar:
+    match por triggers -> top-5 (~1.4k chars) al prompt del planner. Markdown+grep, sin
+    vector DB. Push a agentos_logs (level=lesson) para verlas en el dashboard.
+76. **Heartbeat con cola (OBS-01).** note = JSON {v, queue, queued, paused, held,
+    last_done} en cada push. El estado runtime deja de ser invisible desde fuera (la
+    auditoría del 01-jul diagnosticó "muerto" un sistema vivo por leer la copia stale de
+    Desktop). + state/LEEME.md avisando; fósiles del incidente TCC archivados.
+77. **Higiene del inbox remoto (OBS-02, autorizado).** Misión terminada -> su yaml se
+    mueve missions/inbox -> missions/_processed EN el repo puente (API contents, guardas:
+    solo Wcoach24/alvaro-pipeline y solo rutas missions/*). Rechazadas -> ledger local
+    rejected_ids.txt (fin del re-download+re-spam por ciclo).
+78. **ROB-03 validación de config al boot** (por feature, warning claro + Telegram una vez)
+    + **rotación de logs >5MB** + **VERSION** (1.1.0) + **status.sh** (estado real vía
+    Supabase en un comando) + **$DEPLOY_URL en la DoD** (el verificador lo resuelve desde
+    DEPLOY_URL.txt del workspace: fin de los checks contra URLs asumidas, caso aval-TMS).
+79. **_SYNC_HOLD (ROB-05):** sentinel en la fuente que pausa el self-update mientras se
+    edita un set multi-fichero desde Cowork -> deploys atómicos, nunca estados a medias.
+80. **Watchdog externo (OBS-04):** scheduled task de Cowork cada 30 min contra el
+    heartbeat REST; alerta si envejece >30 min. El vigilante ya tiene vigilante.
+81. Fixes de la mañana (pre-GSD, ya en runtime vía self-update): fallback interno de .env
+    en el watcher (mata el modo de fallo TCC), auto-unfreeze por TTL (24h), plist con
+    source no-fatal + ThrottleInterval 60, rescue.sh con guarda anti-reinicio-sano.
+
+---
+
+## v1.1.1 — Centro de mando + audit trail (2026-07-02, run 25, vía Cowork)
+
+Pedido de Álvaro: dashboard útil de verdad + logs persistentes para aprender y auditar
+las misiones que van mal.
+
+82. **Audit trail completo por misión: `<workspace>/_LOG.jsonl`** (graph.mlog). Registra
+    SIN truncar: cada vuelta del plan (texto íntegro, error, coste, turnos), cada verify
+    (evidencia completa), atascos, abortos por presupuesto, gates y decisiones. Viaja con
+    el workspace a missions/done/<id>/ -> auditar un fallo = leer un jsonl. El stream a
+    Supabase sube su tope de 1500 -> 3500 chars por paso.
+83. **Aprendizaje auditable en remoto:** cada lección destilada se publica entera a
+    agentos_logs (level=lesson) y cada post-mortem del auto-retry también
+    (level=postmortem). Verificado en producción: la misión 2026-07-02-deploy-late-cola
+    (corrió sola esta madrugada bajo v1.1.0) destiló 3 lecciones.
+84. **Dashboard v2 "Centro de Mando"** (agentos-centro.vercel.app, desplegado):
+    - Semáforo real de latido (verde<5m/ámbar<30m/rojo) + versión del runtime.
+    - COLA VISIBLE (del heartbeat note): posición, ⏫ prioridad y ⏸ hold por misión;
+      held/paused con nombres (watcher añade paused_ids/held_ids al note).
+    - Expediente por misión (clic): DoD con evidencia, POST-MORTEM destacado, timeline
+      completo de sus eventos (fetch por mission_id) y salto al log filtrado.
+    - Sección "Lecciones aprendidas" (level=lesson) + KPI de lecciones.
+    - Log en vivo con filtros por tipo (pasos/verify/problemas/lecciones/hitos) y por
+      misión (clic en el id), mensajes expandibles.
+    Deploy: proyecto Vercel agentos-centro (prj_ZT8D…), alias agentos-centro.vercel.app.
+
+---
+
+## v1.2.0 — Cuota + propiedad + centro de operaciones (2026-07-02, run 26)
+
+Basado en el research verificado (docs/RESEARCH-AGENTOS-V2-2026-07-02.html, 28 fuentes).
+
+85. **Cuota Max como recurso de primera clase.** El crédito SDK separado está PAUSADO
+    (soporte Anthropic): todo sale de la bolsa compartida. Cambios: juez asesor
+    opus→sonnet (verifier), post-mortem/lecciones→haiku (lessons._ask_json);
+    RateLimitEvent del SDK capturado en engine (resets_at + utilization, duck-typing
+    defensivo) -> la pausa por rate-limit espera hasta el reset EXACTO (+60s) en vez de
+    martillear cada 15 min (runner._mark_paused reset_at + watcher._next_paused);
+    telemetría level=quota al dashboard cuando la ventana va >=70%.
+86. **Prueba de propiedad estilo ACME (anti reward-hacking).** El runner genera
+    _PROOF_NONCE.txt único por intento; si la misión usa $DEPLOY_URL, el sitio debe
+    servir el nonce EXACTO en /.well-known/agentos-proof.txt; el verificador lo
+    comprueba SIN seguir redirects y es autoritativo (check _ownership). Instrucción
+    añadida al prompt del planner. Cierra para siempre la clase aval-TMS.
+87. **Structured outputs nativos** (output_format json_schema) en engine + lecciones y
+    post-mortem con schema tipado y fallback a extractor de texto (SDKs antiguos).
+88. **Groundwork gates defer/resume:** el watcher detecta y publica la versión del CLI
+    (heartbeat note.cli). defer requiere >=2.1.89; el refactor de gates a tool-calls se
+    hará cuando el dato confirme soporte (decisión con datos, no a ciegas).
+89. **Comando `enqueue`:** crear misiones desde el dashboard (yaml validado con la misma
+    barrera del runner; canal protegido por contraseña).
+
+---
+
+## v1.3.0 — Gates no-bloqueantes + canario + memoria BM25 (2026-07-02, run 27)
+
+CLI verificado 2.1.179 (≥2.1.89) -> defer soportado; aquí se implementa el equivalente
+robusto a nivel de proceso (exit-76), testeable sin auth del plan.
+
+90. **GATES NO-BLOQUEANTES (el gran salto de autonomía).** Antes, un gate bloqueaba el
+    proceso runner esperando el GO/NO (y no sobrevivía a reinicios). Ahora: al toparse el
+    gate, el runner mira UNA vez si hay decisión (gates.poll_decision, no bloquea) y si no,
+    SALE con exit 76 dejando _GATE_PENDING + el checkpoint LangGraph intacto. El watcher
+    (_next_gate) relanza la misión EN CUANTO llega el GO/NO y reanuda desde el checkpoint
+    con Command(resume=...). Efectos: (a) el daemon queda LIBRE para otras misiones mientras
+    una espera decisión; (b) un gate puede durar días; (c) sobrevive a reinicios del Mac.
+    Reutiliza la maquinaria probada del exit-75 de rate-limit. Nuevo estado waiting_gate.
+91. **SUITE CANARIO + REGRESIÓN** (canary/run_canary.py + canary/missions/*.yaml). Corre el
+    verificador REAL contra misiones de prueba con artefactos deterministas (setup propio,
+    sin SDK -> gratis). Métrica pass^k (Anthropic). Incluye un CANARIO NEGATIVO que exige
+    que un check contra algo ausente FALLE -> detecta si el verificador empieza a dar falsos
+    verdes (regresión anti reward-hacking). Scheduled task de Cowork a las 4:00; alerta solo
+    si hay rojo. Groundwork del research: cambio en el verificador -> el canario lo caza.
+92. **LECCIONES v2 con ranking BM25** (lessons._match_fts5): SQLite FTS5 (stdlib, sin deps)
+    sustituye el conteo de triggers por ranking real; fallback a grep si FTS5 no está.
+93. **CONSOLIDADOR de memoria** (lessons.consolidate + watcher._maybe_consolidate_lessons):
+    patrón sleep-time de Letta -> 1x/día en idle, SOLO el consolidador poda duplicados
+    (ignorando encabezado) y exceso (>60, conserva recientes). Las misiones solo AÑADEN;
+    la memoria no se corrompe a mitad de misión. Publica al dashboard (level=lesson).
+
+---
+
+## v1.3.1 — max_turns no es atasco + errores visibles en remoto (2026-07-10, auditoría F1/F2)
+
+Origen: docs/AUDITORIA-2026-07-10.md (telemetría en vivo de kit-bitacora-schedule).
+
+94. **F1: error_max_turns con salida real ya NO alimenta el stuck-detector.** El SDK marca
+    is_error=true cuando la vuelta agota max_turns AUNQUE haya trabajo real hecho; el
+    error_streak lo contaba como "sin salida útil" y abortaba misiones que avanzaban
+    (kit-bitacora: 2 intentos, $5.60, con subidas a Cloudinary completadas). Ahora:
+    engine captura ResultMessage.subtype; stuckdetect.is_productive_error() (puro,
+    testeado) clasifica; graph marca la acción como [MAX-TURNS] (no [SDK ERROR]) y
+    last_error=False. Max-turns con salida VACÍA sigue contando como error. Tests F1
+    en tests/test_v11.py (5 casos, incluido el patrón kit-bitacora).
+95. **F2: el motivo del error del SDK llega a Supabase.** Antes agentos_logs solo decía
+    "(sin salida del SDK)" y res.error moría en el _LOG.jsonl local — imposible
+    distinguir max_turns / 429 / crash desde el dashboard (esta auditoría lo sufrió).
+    Ahora: level=error con subtype+detalle (400 chars) en cada vuelta con is_error, el
+    step vacío incluye el subtipo, y el _LOG.jsonl local registra subtype y
+    err_counts_for_stuck.
+
+---
+
+## v1.4.0 — Convergencia, cuota y resiliencia sin operador (2026-07-10, auditoría F3-F8)
+
+Objetivo del batch: que el sistema se defienda solo (detectar misiones condenadas,
+proteger la cuota, no perder trabajo entre intentos) sin depender de nadie mirando.
+
+96. **F3: regla de CONVERGENCIA de la DoD** (stuckdetect.dod_stalled + graph.node_verify).
+    Si el nº de checks ✓ lleva `budget.dod_stall_limit` (def: no_progress_limit=4)
+    verificaciones sin aumentar, abort retryable "Sin progreso en la DoD" (dispara el
+    auto-retry Reflexion). Mide el AVANCE REAL hacia la DoD, no la forma de la salida
+    del SDK. Caso origen: kit-bitacora, 16 verifies a 0/8 en dos intentos.
+97. **F6: defer por cuota** (engine escribe state/quota.json con cada RateLimitEvent;
+    watcher._quota_hot). Ventana >= QUOTA_DEFER_THRESHOLD (0.85) -> las misiones con
+    priority < QUOTA_DEFER_MIN_PRIORITY (10) esperan en el inbox hasta el reset (foto
+    >30 min se ignora). Los auto-retries (priority 10) pasan. Level=quota al dashboard.
+98. **F4: inventario de assets entre intentos** (watcher._assets_summary). Al re-encolar
+    el intento 2, retry_notes incluye los ficheros y URLs que el intento 1 dejó hechos
+    (y se persiste _ASSETS.md en done/<id>-attempt1). Fin del re-descubrir credenciales
+    y re-subir vídeos ya subidos.
+99. **F7: visibilidad intra-vuelta** — "⏳ vuelta N en curso" (level=step) al ENTRAR en
+    node_plan. Una vuelta legítima de 15 min ya no parece un cuelgue desde el dashboard.
+100. **F8: note limpio en el push final de done** — las notas stale ("timeout watcher")
+    de pushes previos ya no quedan pegadas a misiones completadas. + Watchdog HORARIO
+    remoto (scheduled task cloud) contra agentos_heartbeat con la anon key: si el latido
+    envejece >65 min o frozen=true, notificación push. El vigilante vive FUERA del Mac
+    y es auditable (list_triggers).
+

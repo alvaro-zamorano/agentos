@@ -1,0 +1,494 @@
+{
+  "graph": {
+    "title": "El Atajo — Capítulo 1: La Cañada Cerrada",
+    "start": "cs_apertura",
+    "end": "cs_resurreccion",
+    "nodes": 40,
+    "edges": 48
+  },
+  "routes": [
+    {
+      "route": 1,
+      "name": "intro→A→DC→B",
+      "time_s": 22.37,
+      "bugs": [],
+      "passed": true
+    },
+    {
+      "route": 2,
+      "name": "DC→A→B",
+      "time_s": 17.58,
+      "bugs": [],
+      "passed": true
+    },
+    {
+      "route": 3,
+      "name": "A→B→DC",
+      "time_s": 16.53,
+      "bugs": [],
+      "passed": true
+    }
+  ],
+  "adversarial": {
+    "total": 40,
+    "silent_failures": 3,
+    "failures_list": [
+      "item_tarro_vacio+puerta_trasera@venta",
+      "item_tijeras+puerta_trasera@venta",
+      "item_papel_estraza+puerta_trasera@venta"
+    ],
+    "results": [
+      {
+        "item": "item_fumigador",
+        "hotspot": "suelo_sal",
+        "scene": "sotano",
+        "coords": [
+          90,
+          295
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_fumigador",
+        "hotspot": "piedra_seca",
+        "scene": "canada",
+        "coords": [
+          75,
+          271
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_fumigador",
+        "hotspot": "señal_lacrada",
+        "scene": "canada",
+        "coords": [
+          74,
+          172
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_fumigador",
+        "hotspot": "colmena",
+        "scene": "bancales",
+        "coords": [
+          88,
+          186
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_tarro_vacio",
+        "hotspot": "telefono_pared",
+        "scene": "venta",
+        "coords": [
+          27,
+          155
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_tarro_vacio",
+        "hotspot": "puerta_trasera",
+        "scene": "venta",
+        "coords": [
+          85,
+          180
+        ],
+        "had_response": false,
+        "status": "SILENT_FAIL"
+      },
+      {
+        "item": "item_tarro_vacio",
+        "hotspot": "tia_velas",
+        "scene": "venta",
+        "coords": [
+          86,
+          234
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_tarro_vacio",
+        "hotspot": "anima",
+        "scene": "canada",
+        "coords": [
+          154,
+          178
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_cuaderno_antiguo",
+        "hotspot": "campanilla_caja",
+        "scene": "sotano",
+        "coords": [
+          89,
+          95
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_cuaderno_antiguo",
+        "hotspot": "mojon",
+        "scene": "canada",
+        "coords": [
+          26,
+          198
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_cuaderno_antiguo",
+        "hotspot": "pura_escritorio",
+        "scene": "sotano",
+        "coords": [
+          143,
+          188
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_cuaderno_antiguo",
+        "hotspot": "tijeras_oxidadas",
+        "scene": "telar",
+        "coords": [
+          124,
+          195
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_cera_virgen",
+        "hotspot": "maleta_pura",
+        "scene": "canada",
+        "coords": [
+          115,
+          193
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_cera_virgen",
+        "hotspot": "señal_lacrada",
+        "scene": "canada",
+        "coords": [
+          74,
+          172
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_cera_virgen",
+        "hotspot": "mojon",
+        "scene": "canada",
+        "coords": [
+          26,
+          198
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_cera_virgen",
+        "hotspot": "barrica_miel",
+        "scene": "venta",
+        "coords": [
+          154,
+          231
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_tijeras",
+        "hotspot": "puerta_trasera",
+        "scene": "venta",
+        "coords": [
+          85,
+          180
+        ],
+        "had_response": false,
+        "status": "SILENT_FAIL"
+      },
+      {
+        "item": "item_tijeras",
+        "hotspot": "cuaderno_antiguo",
+        "scene": "telar",
+        "coords": [
+          46,
+          106
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_tijeras",
+        "hotspot": "retrato_quincallero",
+        "scene": "sotano",
+        "coords": [
+          119,
+          97
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_tijeras",
+        "hotspot": "señal_lacrada",
+        "scene": "canada",
+        "coords": [
+          74,
+          172
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_hilo_esparto",
+        "hotspot": "libro_deudas",
+        "scene": "sotano",
+        "coords": [
+          32,
+          157
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_hilo_esparto",
+        "hotspot": "velas_exvoto",
+        "scene": "venta",
+        "coords": [
+          159,
+          170
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_hilo_esparto",
+        "hotspot": "campanilla_caja",
+        "scene": "sotano",
+        "coords": [
+          89,
+          95
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_hilo_esparto",
+        "hotspot": "madeja_esparto",
+        "scene": "telar",
+        "coords": [
+          140,
+          235
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_papel_estraza",
+        "hotspot": "puerta_trasera",
+        "scene": "venta",
+        "coords": [
+          85,
+          180
+        ],
+        "had_response": false,
+        "status": "SILENT_FAIL"
+      },
+      {
+        "item": "item_papel_estraza",
+        "hotspot": "espejo_roto",
+        "scene": "telar",
+        "coords": [
+          155,
+          107
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_papel_estraza",
+        "hotspot": "pura_escritorio",
+        "scene": "sotano",
+        "coords": [
+          143,
+          188
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_papel_estraza",
+        "hotspot": "colmena",
+        "scene": "bancales",
+        "coords": [
+          88,
+          186
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_libro_deudas",
+        "hotspot": "camino_bloqueado",
+        "scene": "canada",
+        "coords": [
+          90,
+          172
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_libro_deudas",
+        "hotspot": "melquiades",
+        "scene": "venta",
+        "coords": [
+          140,
+          234
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_libro_deudas",
+        "hotspot": "tijeras_oxidadas",
+        "scene": "telar",
+        "coords": [
+          124,
+          195
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_libro_deudas",
+        "hotspot": "pozo_seco",
+        "scene": "bancales",
+        "coords": [
+          143,
+          179
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_nombre_escrito",
+        "hotspot": "colmena",
+        "scene": "bancales",
+        "coords": [
+          88,
+          186
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_nombre_escrito",
+        "hotspot": "pratico",
+        "scene": "venta",
+        "coords": [
+          32,
+          234
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_nombre_escrito",
+        "hotspot": "barrica_miel",
+        "scene": "venta",
+        "coords": [
+          154,
+          231
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_nombre_escrito",
+        "hotspot": "pozo_seco",
+        "scene": "bancales",
+        "coords": [
+          143,
+          179
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_lagrima",
+        "hotspot": "anima",
+        "scene": "canada",
+        "coords": [
+          154,
+          178
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_lagrima",
+        "hotspot": "mojon",
+        "scene": "canada",
+        "coords": [
+          26,
+          198
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_lagrima",
+        "hotspot": "muro_piedra",
+        "scene": "bancales",
+        "coords": [
+          90,
+          151
+        ],
+        "had_response": true,
+        "status": "OK"
+      },
+      {
+        "item": "item_lagrima",
+        "hotspot": "olivo_partido",
+        "scene": "bancales",
+        "coords": [
+          26,
+          171
+        ],
+        "had_response": true,
+        "status": "OK"
+      }
+    ]
+  },
+  "summary": {
+    "routes_total": 3,
+    "routes_passed": 3,
+    "routes_failed": 0,
+    "adversarial_combos": 40,
+    "adversarial_silent_failures": 3,
+    "console_errors": 0,
+    "overall_pass": true,
+    "total_time_s": 102.79
+  },
+  "console_errors": []
+}

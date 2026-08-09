@@ -24,8 +24,9 @@
         <string>/usr/bin/env</string>
         <string>bash</string>
         <string>-lc</string>
-        <!-- rutas reales de Alvaro (Mac Mini). Carga .env + venv antes del watcher. -->
-        <string>cd /Users/zorro/agentos &amp;&amp; set -a &amp;&amp; source .env &amp;&amp; set +a &amp;&amp; source .venv/bin/activate &amp;&amp; exec python bin/watcher.py</string>
+        <!-- rutas reales de Alvaro (Mac Mini). Carga .env + venv antes del watcher.
+             source .env NO-FATAL: si TCC lo bloquea, el watcher lo carga por fallback interno. -->
+        <string>cd /Users/zorro/Desktop/os/agent-os &amp;&amp; set -a &amp;&amp; { source .env 2>/dev/null || echo "[launchd] WARN: .env ilegible (TCC?); el watcher usará su fallback interno"; } &amp;&amp; set +a &amp;&amp; source .venv/bin/activate &amp;&amp; exec python bin/watcher.py</string>
     </array>
 
     <key>EnvironmentVariables</key>
@@ -42,11 +43,15 @@
     <true/>
 
     <key>StandardOutPath</key>
-    <string>/Users/zorro/agentos/state/watcher.out.log</string>
+    <string>/Users/zorro/Desktop/os/agent-os/state/watcher.out.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/zorro/agentos/state/watcher.err.log</string>
+    <string>/Users/zorro/Desktop/os/agent-os/state/watcher.err.log</string>
 
     <key>ProcessType</key>
     <string>Background</string>
+
+    <!-- Evita el bucle de reinicio agresivo si el arranque falla (spam de err.log). -->
+    <key>ThrottleInterval</key>
+    <integer>60</integer>
 </dict>
 </plist>

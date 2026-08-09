@@ -31,7 +31,7 @@ from langgraph.types import interrupt, Command
 
 from .engine import run_agent
 from .verifier import verify_dod
-from . import gates, metrics
+from . import gates, metrics, control, stuckdetect
 
 
 def run_sync(coro):
@@ -41,10 +41,32 @@ def run_sync(coro):
     return asyncio.run(coro)
 
 
+def mlog(ws: str, kind: str, **payload) -> None:
+    """AUDIT TRAIL (v1.1): registro COMPLETO por misión en <workspace>/_LOG.jsonl.
+    A diferencia del stream a Supabase (truncado, para el dashboard), aquí va TODO:
+    la salida íntegra de cada vuelta, cada verify, cada atasco. El fichero viaja con
+    el workspace a missions/done/<id>/ -> auditar una misión fallida = leer un jsonl."""
+    try:
+        rec = {"ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "kind": kind}
+        rec.update(payload)
+        os.makedirs(ws, exist_ok=True)
+        with open(os.path.join(ws, "_LOG.jsonl"), "a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False, default=str) + "\n")
+    except Exception:
+        pass
+
+
 class RateLimitPause(Exception):
     """Se topó el límite de uso del plan Max. NO es un fallo de la misión: se pausa
     el grafo (el checkpoint queda intacto) y el watcher la retoma cuando la ventana
     de uso del plan se resetee. Distinto de 'aborted' (que sí cierra la misión)."""
+
+
+class GatePending(Exception):
+    """GATE NO-BLOQUEANTE (v1.3): la misión espera una decisión humana (GO/NO). En vez de
+    bloquear el proceso durante horas/días, el runner SALE (exit 76) dejando el checkpoint
+    intacto; el watcher relanza la misión en cuanto llega la decisión. Sobrevive a reinicios
+    del Mac (el estado del interrupt vive en SqliteSaver, no en RAM)."""
 
 
 # ---------------------------------------------------------------- estado
@@ -53,12 +75,18 @@ class MissionState(TypedDict, total=False):
     cwd: str                            # workspace de la misión
     iteration: int
     last_action: str
+    last_error: bool                    # la última vuelta acabó en error del SDK
     log: Annotated[list, operator.add]  # se acumula
-    state_hashes: list                  # para detectar no-progreso
+    state_hashes: list                  # legado (v1.0); sustituido por action_history
+    action_history: list                # entradas stuckdetect.make_entry() por vuelta
+    stuck_strikes: int                  # atascos detectados (1º -> replan, 2º -> abort)
+    stuck_note: str                     # feedback anti-atasco para la vuelta siguiente
+    lessons_txt: str                    # lecciones de misiones previas (inyecta el runner)
     spend_usd: float                    # estimación acumulada
     last_cost_usd: float                # coste real de la última vuelta (lo acumula bookkeep)
     started_at: float                   # epoch del arranque (tope wall_clock_hours)
     verifier_results: list
+    dod_counts: list                    # nº de checks ✓ por verify (regla de convergencia F3)
     done: bool
     aborted: bool
     abort_reason: str
@@ -66,11 +94,9 @@ class MissionState(TypedDict, total=False):
     last_human: str                     # respuesta humana inyectada
 
 
-def _hash_state(s: MissionState) -> str:
-    # Solo last_action: incluir 'iteration' rompía el detector de no-progreso
-    # (cambia cada vuelta -> nunca detectaba estancamiento -> loop/coste runaway).
-    snap = json.dumps({"last": s.get("last_action")}, sort_keys=True)
-    return hashlib.sha256(snap.encode()).hexdigest()[:12]
+# (v1.1) _hash_state eliminado: el no-progreso lo decide orchestrator/stuckdetect.py
+# (multi-patrón: error_streak / repeat_action / ping_pong, con firma normalizada).
+# El hash literal no detectó el bucle de aval-landing (15x "[SDK ERROR]", $9.30).
 
 
 # ---------------------------------------------------------------- nodos
@@ -87,10 +113,27 @@ def node_plan(state: MissionState) -> MissionState:
         "estos checks pasen con evidencia objetiva. Corrige EXACTAMENTE esto:\n"
         + "\n".join(f"- {r['id']}: {r['evidence']}" for r in fails) + "\n\n"
     ) if fails else ""
+    # ANTI-ATASCO (v1.1): si el stuck-detector saltó, la vuelta siguiente DEBE replantear.
+    stuck_note = state.get("stuck_note", "")
+    stuck_feedback = (
+        f"⚠️ ATASCO DETECTADO ({stuck_note}). Tu enfoque actual NO avanza. CAMBIA de "
+        "estrategia RADICALMENTE: relee la DoD, cuestiona tus supuestos (¿la ruta existe?, "
+        "¿el comando está instalado?, ¿la URL es la correcta?), y ataca por un camino "
+        "DISTINTO al que repetías. Prohibido repetir la misma acción.\n\n"
+    ) if stuck_note else ""
+    # REFLEXION (v1.1): intento 2 tras post-mortem del intento 1 (lo inyecta el watcher).
+    attempt = int(m.get("attempt", 1) or 1)
+    retry_feedback = (
+        f"ESTE ES EL INTENTO {attempt}. POST-MORTEM DEL INTENTO ANTERIOR (síguelo):\n"
+        f"{m.get('retry_notes','')}\n\n"
+    ) if attempt >= 2 and m.get("retry_notes") else ""
     prompt = (
         f"MISIÓN: {m['objective']}\n\nCONTEXTO: {m.get('context','')}\n\n"
         f"DEFINITION OF DONE (lo que debe ser verdad para terminar):\n{dod_txt}\n\n"
         f"RESTRICCIONES: {'; '.join(m.get('constraints', []))}\n\n"
+        + state.get("lessons_txt", "")
+        + retry_feedback
+        + stuck_feedback
         + verifier_feedback +
         f"Estás en la vuelta {it}. Tu WORKSPACE es el directorio de trabajo ACTUAL (.). "
         "Lo hecho hasta ahora vive ahí.\n"
@@ -113,8 +156,26 @@ def node_plan(state: MissionState) -> MissionState:
           "TODO LO DEMÁS ES AUTÓNOMO, incluido desplegar a una URL pública gratis "
           "(p.ej. *.vercel.app) y crear/empujar repos de GitHub (públicos o privados): "
           "NO pidas gate para eso, hazlo.\n"
+          "WORKAROUND-FIRST (política de autonomía): si un camino está bloqueado (URL/nombre "
+          "ocupado, comando ausente, API caída, permiso denegado), NO te pares ni preguntes: "
+          "busca un RODEO (nombre alternativo, otra herramienta equivalente, otra fuente, otra "
+          "ruta) que cumpla la MISMA DoD, y documenta el cambio en el workspace (p.ej. la URL "
+          "real en DEPLOY_URL.txt). Escalar al humano es el ÚLTIMO recurso, solo si NINGÚN "
+          "rodeo puede cumplir la DoD.\n"
+          "Si despliegas algo, escribe SIEMPRE la URL final real en DEPLOY_URL.txt (la DoD "
+          "puede referirse a ella como $DEPLOY_URL).\n"
+          "PRUEBA DE PROPIEDAD (obligatoria si despliegas): tu workspace tiene _PROOF_NONCE.txt. "
+          "El sitio desplegado DEBE servir ese contenido EXACTO en /.well-known/agentos-proof.txt "
+          "(p.ej. copia el fichero a public/.well-known/agentos-proof.txt antes de deployar). "
+          "El verificador lo comprueba; sin nonce servido, la misión NO cierra.\n"
           "Si no hay gate, actúa y al final resume en una línea que empiece por 'DONE-STEP:'."
     )
+    try:
+        control.push_log(m["id"], "step", f"⏳ vuelta {it} en curso (máx "
+                         f"{m['budget'].get('max_turns_per_iter', 30)} turnos del SDK)…",
+                         node="plan", iteration=it)
+    except Exception:
+        pass
     res = run_sync(run_agent(
         prompt,
         system_prompt=(
@@ -147,18 +208,68 @@ def node_plan(state: MissionState) -> MissionState:
         with_integrations=True,                 # cablea Vercel (env) + Supabase (MCP) desde el .env
     ))
     if getattr(res, "rate_limited", False):
-        # Pausa resumible: no quemamos vueltas ni cerramos la misión.
-        raise RateLimitPause(res.error or "límite de uso del plan Max alcanzado")
+        # Pausa resumible: no quemamos vueltas ni cerramos la misión. v1.2: si el SDK
+        # dio resets_at (RateLimitEvent), lo propagamos para que el watcher espere
+        # EXACTAMENTE hasta el reset en vez de reintentar a ciegas cada 15 min.
+        e = RateLimitPause(res.error or "límite de uso del plan Max alcanzado")
+        e.reset_at = float(getattr(res, "rate_reset_at", 0) or 0)
+        raise e
+    # telemetría de cuota (v1.2): si la ventana va cargada, que se vea en el dashboard
+    util = float(getattr(res, "quota_utilization", 0) or 0)
+    if util >= 0.7:
+        try:
+            control.push_log(m["id"], "quota",
+                             f"ventana de uso al {util:.0%}" +
+                             (f" (reset {time.strftime('%H:%M', time.localtime(res.rate_reset_at))})"
+                              if getattr(res, "rate_reset_at", 0) else ""),
+                             node="plan", iteration=it)
+        except Exception:
+            pass
     text = res.text.strip()
+    # F1: error_max_turns con salida real NO es un error de progreso (se quedó sin
+    # turnos a mitad de faena); no debe alimentar la racha del stuck-detector.
+    _is_err = bool(getattr(res, "is_error", False))
+    _subtype = str(getattr(res, "subtype", "") or "")
+    err_is_real = _is_err and not stuckdetect.is_productive_error(_subtype, text)
+    # stream en vivo del SDK: la salida real de esta vuelta -> dashboard
+    try:
+        control.push_log(m["id"], "step",
+                         text[:3500] or ("(sin salida del SDK) "
+                                         + (_subtype or "error") + ": "
+                                         + (getattr(res, "error", "") or "sin detalle")[:300]),
+                         node="plan", iteration=it)
+    except Exception:
+        pass
+    # F2 (auditoría 2026-07-10): el MOTIVO del error, visible en remoto. Antes solo
+    # llegaba '(sin salida del SDK)' y res.error moría en el _LOG.jsonl local del Mac:
+    # imposible distinguir max_turns / 429 / crash desde el dashboard.
+    if _is_err:
+        try:
+            control.push_log(m["id"], "error",
+                             (_subtype or "error") + ": "
+                             + (getattr(res, "error", "") or "(sin detalle)")[:400]
+                             + ("" if err_is_real else
+                                " [max-turns con salida útil: no cuenta como atasco]"),
+                             node="plan", iteration=it)
+        except Exception:
+            pass
+    # audit trail completo (sin truncar) -> <ws>/_LOG.jsonl
+    mlog(state["cwd"], "plan", iteration=it, text=text or "(sin salida)",
+         is_error=bool(getattr(res, "is_error", False)), subtype=_subtype,
+         err_counts_for_stuck=err_is_real,
+         error=getattr(res, "error", "")[:500], cost_usd=getattr(res, "cost_usd", 0.0),
+         num_turns=getattr(res, "num_turns", 0))
     gate = None
     for line in text.splitlines():
         if line.strip().upper().startswith("GATE:"):
             gate = {"subject": line.split(":", 1)[1].strip()[:70], "body": text[:1500]}
             break
-    err_note = " [SDK ERROR]" if getattr(res, "is_error", False) else ""
+    err_note = (" [SDK ERROR]" if err_is_real else " [MAX-TURNS]") if _is_err else ""
     out: MissionState = {
         "iteration": it,
         "last_action": (text[:300] or f"(sin salida){err_note}"),
+        "last_error": err_is_real,
+        "stuck_note": "",  # consumida por esta vuelta
         "log": [f"[plan/act it{it}]{err_note} {text[:200]}"],
         "last_cost_usd": getattr(res, "cost_usd", 0.0),  # coste REAL del SDK; lo acumula node_bookkeep
         "last_human": "",  # consumida
@@ -202,12 +313,33 @@ def node_bookkeep(state: MissionState) -> MissionState:
         return out
     # GASTO = SOLO TELEMETRÍA (no es stopper). Con el SDK por el plan de suscripción de
     # Claude, el coste no debe parar nada: prima que la misión se COMPLETE con calidad.
-    # Los anti-atasco siguen siendo iteraciones / no-progreso / tiempo de pared / timeout SDK.
-    limit = b.get("no_progress_limit", 4)
-    hashes = (state.get("state_hashes", []) + [_hash_state(state)])[-limit:]
-    out["state_hashes"] = hashes
-    if len(hashes) == limit and len(set(hashes)) == 1:
-        out["aborted"] = True; out["abort_reason"] = "Sin progreso en K vueltas."
+    # ANTI-ATASCO v1.1 (stuckdetect multi-patrón): 1ª detección -> REPLAN (se inyecta
+    # stuck_note y se resetea la ventana); 2ª detección -> abort (el replan tampoco salió).
+    entry = stuckdetect.make_entry(state.get("last_action", ""), state.get("last_error", False))
+    hist = ((state.get("action_history") or []) + [entry])[-12:]
+    out["action_history"] = hist
+    stuck, why = stuckdetect.detect(hist, limit=b.get("no_progress_limit", 4))
+    if stuck:
+        strikes = int(state.get("stuck_strikes", 0)) + 1
+        out["stuck_strikes"] = strikes
+        try:
+            control.push_log(state["mission"]["id"], "stuck",
+                             f"atasco #{strikes}: {why}" + (" -> REPLAN" if strikes < 2 else " -> ABORT"),
+                             node="bookkeep", iteration=state.get("iteration"))
+        except Exception:
+            pass
+        if strikes >= 2:
+            out["aborted"] = True
+            out["abort_reason"] = f"Atasco persistente ({why}) — el replan automático tampoco avanzó."
+        else:
+            out["stuck_note"] = why
+            out["action_history"] = []   # ventana fresca para juzgar el nuevo enfoque
+            out["log"] = out["log"] + [f"[bookkeep] ATASCO ({why}) -> replan automático"]
+        mlog(state["cwd"], "stuck", strike=strikes, reason=why,
+             action="replan" if strikes < 2 else "abort")
+    if out.get("aborted"):
+        mlog(state["cwd"], "budget_abort", reason=out.get("abort_reason", ""),
+             iteration=state.get("iteration"), spend_usd=spend)
     return out
 
 
@@ -221,13 +353,39 @@ def node_verify(state: MissionState) -> MissionState:
     try:
         metrics.push_mission(m["id"], m.get("title", ""), "active", False,
                              node="verify", dod=[{**d, "evidence": (d["evidence"] or "")[:200]} for d in dod])
+        control.push_log(m["id"], "verify",
+                         "DoD: " + "; ".join(f"{d['id']}={'✓' if d['passed'] else '✗'}" for d in dod),
+                         node="verify")
     except Exception:
         pass
-    return {
+    mlog(state["cwd"], "verify", done=all_ok,
+         results=[{"id": r.dod_id, "passed": r.passed, "evidence": r.evidence} for r in results])
+    out: MissionState = {
         "verifier_results": dod,
         "done": all_ok,
         "log": [f"[verify] done={all_ok} :: " + "; ".join(f"{r.dod_id}={r.passed}" for r in results)],
     }
+    # F3 (2026-07-10): regla de CONVERGENCIA. Si el nº de checks ✓ lleva
+    # dod_stall_limit verificaciones sin moverse, la misión no converge -> abort
+    # retryable ("Sin progreso" dispara el auto-retry con post-mortem). Señal más
+    # limpia que el error_streak: mide el AVANCE REAL hacia la DoD, no la forma
+    # de la salida del SDK.
+    if not all_ok:
+        counts = (state.get("dod_counts") or []) + [sum(1 for d in dod if d["passed"])]
+        out["dod_counts"] = counts
+        b = m.get("budget", {})
+        stalled, why = stuckdetect.dod_stalled(counts, b.get("dod_stall_limit",
+                                                             b.get("no_progress_limit", 4)))
+        if stalled:
+            out["aborted"] = True
+            out["abort_reason"] = why
+            try:
+                control.push_log(m["id"], "stuck", why + " -> ABORT", node="verify",
+                                 iteration=state.get("iteration"))
+            except Exception:
+                pass
+            mlog(state["cwd"], "dod_stalled", reason=why, counts=counts[-8:])
+    return out
 
 
 def node_gate_notify(state: MissionState) -> MissionState:
@@ -239,6 +397,7 @@ def node_gate_notify(state: MissionState) -> MissionState:
     m = state["mission"]
     to = m.get("notify_email") or os.environ.get("DISPATCHER_EMAIL", "")
     gates.send_gate(m["id"], g["subject"], g["body"], to=to or None, decision=True)
+    mlog(state["cwd"], "gate_notify", subject=g["subject"], body=g["body"][:2000])
     return {"log": [f"[gate] [GATE] enviado (con botones GO/NO) -> {g['subject']}"]}
 
 
@@ -251,6 +410,8 @@ def node_gate_wait(state: MissionState) -> MissionState:
     decision = interrupt({"type": "payment_gate", "mission": m["id"], "subject": g["subject"]})
     approved = bool(decision.get("approved"))
     human = decision.get("instructions", "")
+    mlog(state["cwd"], "gate_decision", subject=g["subject"], approved=approved,
+         instructions=(human or "")[:500])
     if not approved:
         return {"aborted": True, "abort_reason": f"Gate rechazado: {g['subject']}",
                 "log": [f"[gate] NO -> abortado"], "pending_gate": {}}

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>El Atajo — Capítulo 1</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; touch-action: manipulation; }
+body {
+  background: #1a1225;
+  font-family: 'Georgia', serif;
+  color: #e8d9b0;
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── GAME AREA ──────────────────────────────────────────── */
+#game {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+#c {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  cursor: pointer;
+}
+
+/* ── ONBOARDING ─────────────────────────────────────────── */
+#onboard {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(26,18,37,0.92);
+  z-index: 20;
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+}
+.ob-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #f2c46d;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.ob-sub {
+  font-size: 0.95rem;
+  color: #8b7eb8;
+  margin-bottom: 24px;
+  font-style: italic;
+}
+.ob-hint {
+  font-size: 0.8rem;
+  color: #7b8fad;
+  line-height: 1.6;
+  max-width: 280px;
+  margin-bottom: 32px;
+}
+.ob-hint span { display: block; margin-bottom: 4px; }
+.ob-btn {
+  background: #c4202a;
+  color: #e8d9b0;
+  border: none;
+  padding: 14px 40px;
+  font-size: 1.1rem;
+  font-family: inherit;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-height: 44px;
+  border-radius: 2px;
+}
+.ob-btn:active { background: #8b1520; }
+
+/* ── TEXT OVERLAY ───────────────────────────────────────── */
+#text-overlay {
+  display: none;
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  background: rgba(26,18,37,0.90);
+  border: 1px solid #4a6fa5;
+  padding: 10px 12px;
+  border-radius: 4px;
+  z-index: 15;
+  cursor: pointer;
+}
+#text-overlay .speaker {
+  display: block;
+  font-size: 0.7rem;
+  color: #f2c46d;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+#text-overlay .line {
+  display: block;
+  font-size: 0.88rem;
+  color: #e8d9b0;
+  line-height: 1.45;
+}
+
+/* ── DIALOG OVERLAY ──────────────────────────────────────── */
+#dialog-overlay {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(26,18,37,0.96);
+  border-top: 2px solid #4a6fa5;
+  z-index: 16;
+  padding: 12px 12px 8px;
+  max-height: 60%;
+  overflow-y: auto;
+}
+.d-speaker {
+  font-size: 0.7rem;
+  color: #f2c46d;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.d-line {
+  font-size: 0.88rem;
+  color: #e8d9b0;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.d-opts { display: flex; flex-direction: column; gap: 6px; }
+.d-opt {
+  background: rgba(74,111,165,0.25);
+  border: 1px solid #4a6fa5;
+  color: #e8d9b0;
+  font-family: inherit;
+  font-size: 0.82rem;
+  padding: 10px 12px;
+  min-height: 44px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 2px;
+  line-height: 1.4;
+}
+.d-opt:active { background: rgba(74,111,165,0.5); }
+
+/* ── INVENTORY ───────────────────────────────────────────── */
+#inventory {
+  display: none;
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 8px;
+  z-index: 14;
+  flex-wrap: wrap;
+}
+.inv-item {
+  min-width: 44px;
+  min-height: 44px;
+  border: 2px solid rgba(232,217,176,0.4);
+  border-radius: 4px;
+  font-size: 0.6rem;
+  font-weight: bold;
+  color: #1a1225;
+  cursor: pointer;
+  font-family: monospace;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.inv-item.inv-sel {
+  border-color: #f2c46d;
+  box-shadow: 0 0 0 2px #f2c46d;
+}
+
+/* ── OBJETIVO PANEL ──────────────────────────────────────── */
+#obj-panel {
+  display: none;
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  background: rgba(26,18,37,0.92);
+  border: 1px solid #c4202a;
+  padding: 10px 12px;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  color: #e8d9b0;
+  line-height: 1.5;
+  z-index: 17;
+}
+
+/* ── TOOLBAR ─────────────────────────────────────────────── */
+#toolbar {
+  display: flex;
+  height: 56px;
+  background: #0e0a1a;
+  border-top: 1px solid #2d2b3d;
+  flex-shrink: 0;
+}
+#toolbar button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-right: 1px solid #2d2b3d;
+  color: #7a7d8a;
+  font-family: 'Georgia', serif;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  min-height: 44px;
+  transition: background 0.1s, color 0.1s;
+}
+#toolbar button:last-child { border-right: none; }
+#toolbar button.active { background: #2d5a8e; color: #f2c46d; }
+#toolbar button:active { background: rgba(74,111,165,0.3); }
+</style>
+</head>
+<body>
+
+<div id="game">
+  <canvas id="c"></canvas>
+
+  <!-- Onboarding -->
+  <div id="onboard">
+    <div class="ob-title">El Atajo</div>
+    <div class="ob-sub">Capítulo 1 · La Cañada Cerrada</div>
+    <div class="ob-hint">
+      <span>Toca para explorar y examinar.</span>
+      <span>Usa MIRAR para inspeccionar objetos.</span>
+      <span>Usa USAR para combinar e interactuar.</span>
+      <span>OBJETIVO muestra tu misión actual.</span>
+    </div>
+    <button class="ob-btn" id="ob-start">Comenzar</button>
+  </div>
+
+  <!-- Text overlay -->
+  <div id="text-overlay"></div>
+
+  <!-- Dialog overlay -->
+  <div id="dialog-overlay"></div>
+
+  <!-- Inventory -->
+  <div id="inventory"></div>
+
+  <!-- Objetivo panel -->
+  <div id="obj-panel"></div>
+</div>
+
+<!-- Toolbar -->
+<div id="toolbar">
+  <button id="btn-look">MIRAR</button>
+  <button id="btn-use">USAR</button>
+  <button id="btn-obj">OBJETIVO</button>
+</div>
+
+<!-- Embedded game data -->
+<script>
+(async function() {
+  try {
+    const [scriptRes, graphRes] = await Promise.all([
+      fetch('data/script-es.json'),
+      fetch('data/graph.json'),
+    ]);
+    window.__SCRIPT = await scriptRes.json();
+    window.__GRAPH  = await graphRes.json();
+  } catch(e) {
+    console.error('Failed to load game data:', e);
+  }
+
+  // Onboard button also starts game
+  document.getElementById('ob-start').addEventListener('click', () => {
+    if (window.__advance) window.__advance();
+  });
+})();
+</script>
+
+<!-- Art modules -->
+<script src="art/palette.js"></script>
+<script src="art/sprites.js"></script>
+<script src="art/scenes/escena1.js"></script>
+<script src="art/scenes/escena2.js"></script>
+<script src="art/scenes/escena3.js"></script>
+<script src="art/scenes/escena4.js"></script>
+<script src="art/scenes/escena5.js"></script>
+
+<!-- Game engine -->
+<script src="src/engine.js"></script>
+
+</body>
+</html>

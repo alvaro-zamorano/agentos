@@ -267,6 +267,41 @@ def wait_for_decision(mission_id: str, poll_seconds: int = 60, timeout_hours: fl
     return GateDecision(False, "TIMEOUT: sin respuesta humana, gate denegado por seguridad.")
 
 
+def poll_decision(mission_id: str) -> "GateDecision | None":
+    """NO BLOQUEA: mira una vez los dos canales (dashboard + Telegram/email) y devuelve
+    la decisión si ya llegó, o None. Es la pieza de los GATES NO-BLOQUEANTES (v1.3): el
+    runner sale del proceso mientras espera (exit 76) y el watcher lo relanza cuando esto
+    devuelve algo -> el daemon nunca queda con un proceso colgado esperando un GO, y la
+    espera sobrevive a reinicios del Mac (el checkpoint LangGraph está en disco)."""
+    # 1) dashboard
+    try:
+        from . import control
+        d = control.gate_decision(mission_id)
+        if d is not None:
+            return GateDecision(bool(d), "Decisión desde el dashboard: " + ("GO" if d else "NO"))
+    except Exception:
+        pass
+    # 2) canal principal (una pasada corta)
+    if _channel() == "telegram":
+        try:
+            offset = _load_offset()
+            resp = _tg_api("getUpdates", {"offset": offset, "timeout": 0}, timeout=15)
+            for upd in resp.get("result", []):
+                offset = max(offset, upd["update_id"] + 1)
+                _save_offset(offset)
+                dec = _parse_update(upd, mission_id)
+                if dec is not None:
+                    return dec
+        except Exception:
+            pass
+    else:
+        try:
+            return _email_check(mission_id)
+        except Exception:
+            pass
+    return None
+
+
 def next_command(timeout: int = 2) -> str | None:
     """Siguiente idea '/idea ...' pendiente (drena cola + un getUpdates corto). Lo usa el
     watcher cuando está OCIOSO, para no chocar con el polling de gates del runner (serie)."""

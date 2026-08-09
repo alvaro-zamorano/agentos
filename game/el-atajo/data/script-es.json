@@ -1,0 +1,912 @@
+{
+  "scenes": {
+    "canada": {
+      "name": "La Cañada Cerrada",
+      "hotspots": {
+        "señal_lacrada": {
+          "name": "Señal de embargo",
+          "looks": [
+            "Un cartel de embargo. Lacre rojo. Letra de notario con prisa.",
+            "El sello está fresco. La Pura pasó aquí esta mañana. Qué madrugadora."
+          ],
+          "interact": [
+            ["REME", "Las letras dicen que no puedo pasar. Las letras me dan igual, pero el lacre pesa más que yo."]
+          ]
+        },
+        "maleta_pura": {
+          "name": "Maletín de la Pura",
+          "looks": [
+            "Cuero negro, costuras reforzadas. Huele a burocracia y a amenaza.",
+            "El maletín sigue ahí. La Pura no olvida nada que sea suyo."
+          ],
+          "interact": [
+            ["REME", "No lo abro. El que abre el maletín de la Pura firma algo sin leerlo."]
+          ]
+        },
+        "bicicleta": {
+          "name": "Mi bicicleta",
+          "looks": [
+            "Mi bici. La muela de amolar aguanta más que yo.",
+            "Turbo la mira como si pudiera montarse en el portaequipajes. Podría, pero no lo hace."
+          ],
+          "interact": [
+            ["REME", "La bici no traspasa precintos. Ojalá."]
+          ]
+        },
+        "turbo": {
+          "name": "Turbo",
+          "looks": [
+            "Turbo se ha tumbado en mitad del camino. Ni embargo ni nada lo mueve.",
+            "Turbo bosteza. Es su manera de decir que tiene razón y yo no."
+          ],
+          "interact": [
+            ["REME", "Turbo, o te mueves tú o te muevo yo. Y ya sabes cuál de las dos opciones cuesta menos."],
+            ["REME", "Turbo me mira. Tiene razón: no hay por dónde. Aún."]
+          ]
+        },
+        "camino_bloqueado": {
+          "name": "Cañada precintada",
+          "looks": [
+            "La cañada cerrada. Cinta de precinto y un lacre del tamaño de mi cabeza.",
+            "Tres metros de cinta municipal. Suficiente para hundir un oficio."
+          ],
+          "interact": [
+            ["REME", "La cinta no cede. Y aunque cediera, el lacre es oficial. Necesito otro camino."]
+          ]
+        },
+        "mojon": {
+          "name": "Mojón de término",
+          "looks": [
+            "Piedra de término. Aquí acaba el camino libre y empieza el problema.",
+            "El mojón lleva ahí doscientos años. La cinta de precinto, dos días."
+          ],
+          "interact": [
+            ["REME", "El mojón no tiene nada que decirme. Ya lo dice todo con su sitio."]
+          ]
+        },
+        "anima": {
+          "name": "Ánima de hojalata",
+          "looks": [
+            "Una ánima de hojalata. El difunto lleva aquí mucho antes que la Pura.",
+            "Las flores son frescas. Alguien viene a visitarla. Yo no tengo ese tiempo hoy."
+          ],
+          "interact": [
+            ["REME", "No toco las ánimas. Por respeto y por precaución. Sobre todo por precaución."]
+          ]
+        },
+        "piedra_seca": {
+          "name": "Piedra suelta",
+          "looks": [
+            "Una piedra sin más. A veces una piedra solo es una piedra.",
+            "Sigo pensando que es una piedra. El segundo vistazo no la mejoró."
+          ],
+          "interact": [
+            ["REME", "La muevo. Debajo hay tierra. No soy arqueóloga."]
+          ]
+        }
+      }
+    },
+    "venta": {
+      "name": "La Venta de Tía Velas",
+      "hotspots": {
+        "tia_velas": {
+          "name": "Tía Velas",
+          "looks": [
+            "Tía Velas. Sesenta años de cera y miel. Los ojos de quien ha visto cosas y no las ha olvidado.",
+            "Tía Velas me mira como si ya supiera lo que vengo a pedir. Seguramente lo sabe."
+          ],
+          "interact": [
+            ["REME", "Tía Velas, vengo por el embargo."],
+            ["TIA_VELAS", "Ya sé por qué vienes. La pregunta es si sabes lo que vas a necesitar para arreglarlo."],
+            ["REME", "Eso es lo que no sé."],
+            ["TIA_VELAS", "Entonces siéntate. Esto lleva su tiempo."]
+          ]
+        },
+        "melquiades": {
+          "name": "Melquíades",
+          "looks": [
+            "Melquíades, con su traje de representante y su maletín de catálogos. A estas horas.",
+            "Melquíades ha sacado un folleto nuevo. Va a ser que no."
+          ],
+          "interact": [
+            ["MELQUIADES", "Señora Furriel, qué oportuna. Tengo un producto que se adapta exactamente a su situación."],
+            ["REME", "No, Melquíades."],
+            ["MELQUIADES", "Ni siquiera ha visto las condiciones."],
+            ["REME", "Tampoco las voy a ver."]
+          ]
+        },
+        "pratico": {
+          "name": "El Práctico",
+          "looks": [
+            "El Práctico. Jubilado de todo menos de saber caminos.",
+            "El Práctico tiene cara de estar a punto de contarme algo largo. Siempre tiene esa cara."
+          ],
+          "interact": [
+            ["REME", "Práctico, necesito llegar a los bancales. La cañada está cortada."],
+            ["EL_PRACTICO", "La cañada principal, sí. Pero el portillo del cuarenta y dos, ese no lo registraron."],
+            ["REME", "¿Dónde está ese portillo?"],
+            ["EL_PRACTICO", "Por donde el olivo partido, que está desde el año del pedrisco. Antes del pozo seco, a mano izquierda mirando al cerro."]
+          ]
+        },
+        "mapa_cañadas": {
+          "name": "Mapa de cañadas",
+          "looks": [
+            "Un mapa de la comarca clavado con chinchetas. Tiene tantas marcas que parece un campo de batalla.",
+            "El mapa tiene caminos marcados a lápiz que no salen en ningún otro sitio. El Práctico los dibujó."
+          ],
+          "interact": [
+            ["REME", "Busco el olivo partido. El Práctico lo menciona siempre. Aquí lo veo. Y el portillo también."]
+          ]
+        },
+        "velas_exvoto": {
+          "name": "Velas ex-voto",
+          "looks": [
+            "Velas con formas de riñón, de pierna, de corazón. Cada una pagó una deuda.",
+            "Tía Velas las hace a mano. Se nota. Y funcionan. También se nota."
+          ],
+          "interact": [
+            ["REME", "¿Para qué son estas velas con formas?"],
+            ["TIA_VELAS", "Ex-votos. Cada forma paga una deuda distinta. La tuya todavía no tiene forma. Habrá que encontrarla."]
+          ]
+        },
+        "barrica_miel": {
+          "name": "Barrica de miel",
+          "looks": [
+            "Miel de encina. Oscura como el ámbar de la sierra. No la venden en ninguna tienda.",
+            "La barrica tiene una grieta tapada con cera. Qué metáfora tan poco sutil."
+          ],
+          "interact": [
+            ["REME", "La miel huele a bancal y a trabajo de años. No meto la mano sin permiso."]
+          ]
+        },
+        "puerta_trasera": {
+          "name": "Puerta trasera",
+          "looks": [
+            "La puerta trasera está atascada. No es la primera vez que la veo así.",
+            "La puerta huele a humedad y a secreto. Dos cosas que van juntas en esta comarca."
+          ],
+          "interact": [
+            ["REME", "Cerrada. Tía Velas la abre cuando le parece, no cuando yo lo decido."]
+          ]
+        },
+        "telefono_pared": {
+          "name": "Teléfono de pared",
+          "looks": [
+            "El teléfono de pared. Negro, con disco de marcar. Funciona mejor que el móvil aquí dentro.",
+            "Desde aquí llamo a Pili. Siempre escucha. Siempre pregunta demasiado."
+          ],
+          "interact": [
+            ["REME", "Llamo a Pili. Le cuento lo que hay. Ella pregunta lo que no he contado todavía."]
+          ]
+        },
+        "gato": {
+          "name": "Gato negro",
+          "looks": [
+            "Un gato negro que no es de nadie y lo sabe.",
+            "El gato me mira como si supiera algo que yo no sé. Igual que todos en este pueblo."
+          ],
+          "interact": [
+            ["REME", "El gato no se mueve. No se va a mover. Tenemos un acuerdo tácito de ignorarnos."]
+          ]
+        }
+      }
+    },
+    "bancales": {
+      "name": "Los Bancales y la Colmena",
+      "hotspots": {
+        "colmena": {
+          "name": "Colmena vieja",
+          "looks": [
+            "La colmena de los bancales. Vieja como el campo. Las abejas no entienden de embargos.",
+            "De la colmena salen cuatro abejas y vuelven. Día normal para ellas. Para mí, menos."
+          ],
+          "interact": [
+            ["REME", "Me acerco. Una abeja me avisa. Retrocedo. El diálogo ha sido claro."]
+          ]
+        },
+        "abeja_reina": {
+          "name": "Abeja reina",
+          "looks": [
+            "No la veo pero está ahí dentro. Siempre está ahí.",
+            "Si la reina sale, el día se complica. Hoy ya está bastante complicado."
+          ],
+          "interact": [
+            ["REME", "No voy a buscar a la reina. Bastante tengo con las guardias."]
+          ]
+        },
+        "fumigador": {
+          "name": "Fumigador de azufre",
+          "looks": [
+            "Un fumigador de azufre, olvidado junto al muro. Alguien lo dejó a medias.",
+            "El fumigador tiene fuelle y queda azufre. Funciona. Podría ser útil o podría ser un desastre."
+          ],
+          "interact": [
+            ["REME", "Lo cojo. Alguien lo dejó aquí para que yo lo encontrara, o eso me digo para no pensar demasiado."]
+          ]
+        },
+        "cesto_esparto": {
+          "name": "Cesto de esparto",
+          "looks": [
+            "Un cesto de esparto sin terminar. Las tiras cuelgan como si esperaran que alguien volviera.",
+            "El esparto está bien trenzado hasta donde alguien lo dejó. Justo a medias."
+          ],
+          "interact": [
+            ["REME", "El cesto está a medias. El esparto es bueno pero no es lo que necesito ahora."]
+          ]
+        },
+        "pozo_seco": {
+          "name": "Pozo seco",
+          "looks": [
+            "El pozo lleva seco desde el verano del calor. Nadie lo recuerda lleno ya.",
+            "Bajo el cubo. Sube polvo. El pozo seco es un pozo que no miente."
+          ],
+          "interact": [
+            ["REME", "El pozo no tiene agua. Tiene eco y tiene polvo. Me quedo con el eco."]
+          ]
+        },
+        "olivo_partido": {
+          "name": "Olivo partido",
+          "looks": [
+            "El olivo partido por el pedrisco. El Práctico lo mencionó. Aquí es donde doblo.",
+            "El olivo partido tiene una oquedad grande en el tronco. Perfecta para guardar o para perder cosas."
+          ],
+          "interact": [
+            ["REME", "Dentro del olivo hay algo guardado. Un cuaderno con tapas de hule. No estaba aquí por casualidad."]
+          ]
+        },
+        "tarro_vacio": {
+          "name": "Tarro de cristal",
+          "looks": [
+            "Un tarro de cristal vacío. Alguien recogió miel aquí antes que yo.",
+            "El tarro tiene restos de cera en el borde. Alguien se adelantó, pero dejó el tarro."
+          ],
+          "interact": [
+            ["REME", "El tarro está limpio por dentro. Sirve para lo que necesito."]
+          ]
+        },
+        "muro_piedra": {
+          "name": "Muro de piedra seca",
+          "looks": [
+            "Un muro de piedra seca que lleva aquí más que el pueblo y no tiene intención de irse.",
+            "Entre las piedras hay hierbas que conocen su oficio mejor que nadie."
+          ],
+          "interact": [
+            ["REME", "El muro aguanta. Las piedras se sostienen sin argamasa. Alguien lo hizo bien y hace mucho."]
+          ]
+        }
+      }
+    },
+    "telar": {
+      "name": "La Sala del Telar",
+      "hotspots": {
+        "telar": {
+          "name": "Telar grande",
+          "looks": [
+            "El telar ocupa media sala. Lo fabricaron para quedarse y se quedó.",
+            "El telar está parado pero la lanzadera brilla. Alguien lo usa. No yo."
+          ],
+          "interact": [
+            ["REME", "El telar es mayor que yo y más complicado. No lo toco."]
+          ]
+        },
+        "madeja_esparto": {
+          "name": "Madeja de esparto",
+          "looks": [
+            "Esparto en madeja, ya limpio y listo. Justo lo que necesito para el exvoto.",
+            "La madeja huele a campo seco y a trabajo hecho."
+          ],
+          "interact": [
+            ["REME", "La madeja está aquí. Las tijeras están en otro sitio. Así es este día."]
+          ]
+        },
+        "tijeras_oxidadas": {
+          "name": "Tijeras de sastre",
+          "looks": [
+            "Tijeras de sastre oxidadas. Cortan mejor de lo que prometen, como cierta gente.",
+            "Las tijeras están oxidadas pero afiladas. Las oxido yo misma si hace falta."
+          ],
+          "interact": [
+            ["REME", "Las tijeras están en la caja. La caja tiene un lacre. El lacre es el problema de hoy."]
+          ]
+        },
+        "espejo_roto": {
+          "name": "Espejo roto",
+          "looks": [
+            "Un espejo roto en tres trozos. Mala suerte a la carta, como si hiciera falta.",
+            "El espejo roto me devuelve tres Remes. Ninguna parece contenta."
+          ],
+          "interact": [
+            ["REME", "No recojo los trozos. La mala suerte ya está cobrada. No voy a devolverla."]
+          ]
+        },
+        "rueca": {
+          "name": "Rueca",
+          "looks": [
+            "La rueca está parada. No hay hilo en el huso.",
+            "La rueca huele a madera vieja y a tardes muy largas."
+          ],
+          "interact": [
+            ["REME", "La rueca no tiene hilo. La sala tampoco tiene dueño visible. Cosas que pasan."]
+          ]
+        },
+        "ventana_tapiada": {
+          "name": "Ventana tapiada",
+          "looks": [
+            "La ventana está tapiada con ladrillos. Alguien quiso no ver lo que había fuera, o que no lo vieran.",
+            "Detrás de la ventana tapiada oigo viento. Solo viento, de momento."
+          ],
+          "interact": [
+            ["REME", "No la destapono. Si alguien la tapió, sus razones tendría. Y yo no tengo martillo."]
+          ]
+        },
+        "caja_lacre": {
+          "name": "Caja con lacres",
+          "looks": [
+            "Una caja con lacres rojos. Igualitos a los de la Pura. Igualitos.",
+            "Los lacres son del mismo molde que los de los embargos. Esto se complica más de lo que parecía."
+          ],
+          "interact": [
+            ["REME", "La caja está lacrada. Necesito quitar el lacre para coger las tijeras. El día no mejora."]
+          ]
+        },
+        "cuaderno_antiguo": {
+          "name": "Cuaderno de hule",
+          "looks": [
+            "Un cuaderno con tapas de hule. La caligrafía es de otra época, de cuando escribir costaba.",
+            "El cuaderno tiene nombres y fechas. Algunos nombres los reconozco del pueblo."
+          ],
+          "interact": [
+            ["REME", "Leo el cuaderno. Los nombres son de aquí. Las deudas son de antes de que yo naciera. Y siguen abiertas."]
+          ]
+        }
+      }
+    },
+    "sotano": {
+      "name": "El Sótano del Registro",
+      "hotspots": {
+        "archivador": {
+          "name": "Archivador municipal",
+          "looks": [
+            "El archivador municipal. Cuatro cajones de secretos con llave.",
+            "El archivador huele a papel viejo y a cosas que alguien quiso enterrar y no enterró."
+          ],
+          "interact": [
+            ["REME", "El cajón tercero no cierra del todo. Dentro están los registros más viejos. Y el nombre que busco."]
+          ]
+        },
+        "campanilla_caja": {
+          "name": "Campanilla en caja",
+          "looks": [
+            "Una campanilla metida en una caja de madera. No la toco. No pienso tocarla.",
+            "La campanilla está quieta pero tengo la sensación de que me mira. Los objetos no miran. Esta sí."
+          ],
+          "interact": [
+            ["REME", "No la toco. Tía Velas fue muy clara: la campanilla no se toca. Nunca."]
+          ]
+        },
+        "libro_deudas": {
+          "name": "Libro de deudas",
+          "looks": [
+            "El libro de deudas del Quincallero. Con nombres. Con fechas. Con intereses que no prescriben.",
+            "El libro tiene páginas en blanco al final. Eso es lo más preocupante de todo lo que he visto hoy."
+          ],
+          "interact": [
+            ["REME", "El libro tiene el nombre en la portada. Eustasio Quero Pintado. Ya lo sé. Y ahora no puedo no saberlo."]
+          ]
+        },
+        "vela_sebo": {
+          "name": "Vela de sebo",
+          "looks": [
+            "Una vela de sebo que no apaga el frío del sótano. Solo lo ilumina.",
+            "La vela tiembla aunque no hay corriente. Aquí abajo pasan cosas."
+          ],
+          "interact": [
+            ["REME", "La vela sigue encendida. Alguien la puso hoy. Alguien que sabía que iba a venir alguien."]
+          ]
+        },
+        "pura_escritorio": {
+          "name": "Escritorio de la Pura",
+          "looks": [
+            "El escritorio de la Pura. Perfectamente ordenado. Eso me da más miedo que el desorden.",
+            "En el escritorio hay un sello, tres lacres y una agenda llena de tareas pendientes sin fecha."
+          ],
+          "interact": [
+            ["REME", "Leo la agenda por encima. Los embargos de la semana. El pueblo entero, por orden alfabético."]
+          ]
+        },
+        "retrato_quincallero": {
+          "name": "Retrato del Quincallero",
+          "looks": [
+            "Un retrato en sepia. Hombre con campanilla y maletín de muestras. Los ojos no cuadran con la sonrisa.",
+            "El retrato del Quincallero. Sonríe como quien sabe que va a ganar. Sonríe igual que la Pura."
+          ],
+          "interact": [
+            ["REME", "Eustasio Quero Pintado. Ya te conozco. El nombre tiene más peso ahora que lo sé."]
+          ]
+        },
+        "caja_embargos": {
+          "name": "Caja de bienes embargados",
+          "looks": [
+            "La caja de los embargos. Está casi llena. Reconozco cosas del pueblo entre el inventario.",
+            "En la caja están la campanilla, un reloj parado, unas gafas y una cuchara de plata. El pueblo en miniatura."
+          ],
+          "interact": [
+            ["REME", "La campanilla está en el inventario. La Pura la embargó sin saber lo que era. O sabiendo."]
+          ]
+        },
+        "suelo_sal": {
+          "name": "Sal en el umbral",
+          "looks": [
+            "Alguien esparció sal en el umbral del sótano. No fue la Pura.",
+            "La sal está puesta con intención. Tía Velas diría que es protección. O advertencia. Las dos cosas a la vez."
+          ],
+          "interact": [
+            ["REME", "No piso la sal. La sal puesta con intención merece respeto, aunque no sepa bien para qué."]
+          ]
+        }
+      }
+    }
+  },
+  "dialogs": {
+    "dialog_tiavelas": {
+      "start": "tv_inicio",
+      "nodes": {
+        "tv_inicio": {
+          "speaker": "TIA_VELAS",
+          "line": "El exvoto necesita cuatro cosas. Sin las cuatro no cierra. ¿Qué quieres saber primero?",
+          "options": [
+            {"text": "¿Qué es la cera virgen y dónde está?", "next": "tv_cera"},
+            {"text": "¿Para qué sirve el hilo de esparto?", "next": "tv_hilo"},
+            {"text": "¿Por qué hace falta el nombre verdadero?", "next": "tv_nombre"},
+            {"text": "¿Qué es una lágrima de deudor?", "next": "tv_lagrima"}
+          ]
+        },
+        "tv_cera": {
+          "speaker": "TIA_VELAS",
+          "line": "La cera virgen no ha tocado el fuego ni la mano sin guante. La colmena de los bancales la tiene. Pero antes necesito que traigas miel para la barrica.",
+          "options": [
+            {"text": "¿Y el fumigador que hay allí sirve?", "next": "tv_cera2"},
+            {"text": "Pregunto por el hilo.", "next": "tv_hilo"},
+            {"text": "De acuerdo. Voy a los bancales.", "next": "tv_cierre"}
+          ]
+        },
+        "tv_cera2": {
+          "speaker": "TIA_VELAS",
+          "line": "El fumigador calma a las abejas. No las engaña. Solo les dice que no tienes prisa. Luego eres tú quien lo recoge con cuidado.",
+          "options": [
+            {"text": "Entendido. Voy.", "next": "tv_cierre"},
+            {"text": "Pregunto por el hilo antes.", "next": "tv_hilo"}
+          ]
+        },
+        "tv_hilo": {
+          "speaker": "TIA_VELAS",
+          "line": "El esparto trenzado ata lo que el exvoto quiere retener. La madeja está en el telar. La puerta trasera la abro yo cuando tengas la cera.",
+          "options": [
+            {"text": "¿Por qué primero la cera?", "next": "tv_hilo2"},
+            {"text": "Pregunto por el nombre.", "next": "tv_nombre"},
+            {"text": "De acuerdo.", "next": "tv_cierre"}
+          ]
+        },
+        "tv_hilo2": {
+          "speaker": "TIA_VELAS",
+          "line": "Porque el exvoto empieza por la base, no por el nudo. Eso se aprende tarde o se aprende caro.",
+          "options": [
+            {"text": "De acuerdo. Primero la cera.", "next": "tv_cierre"},
+            {"text": "Pregunto por el nombre.", "next": "tv_nombre"}
+          ]
+        },
+        "tv_nombre": {
+          "speaker": "TIA_VELAS",
+          "line": "El nombre verdadero del Quincallero. No el que usaba de camino. El del registro. Sin él el exvoto no sabe a quién apunta.",
+          "options": [
+            {"text": "¿Cómo lo busco?", "next": "tv_nombre2"},
+            {"text": "Pregunto por la lágrima.", "next": "tv_lagrima"},
+            {"text": "Entendido.", "next": "tv_cierre"}
+          ]
+        },
+        "tv_nombre2": {
+          "speaker": "TIA_VELAS",
+          "line": "El sótano del registro. Los libros viejos lo tienen. Antes de bajar, pisa la sal del umbral solo con el talón. Y no toques la campanilla.",
+          "options": [
+            {"text": "No la tocaré.", "next": "tv_nombre3"},
+            {"text": "Pregunto por la lágrima.", "next": "tv_lagrima"}
+          ]
+        },
+        "tv_nombre3": {
+          "speaker": "TIA_VELAS",
+          "line": "Eso lo dicen todos. Ninguno lo dice dos veces.",
+          "options": [
+            {"text": "Yo sí lo digo dos veces. ¿Y la lágrima?", "next": "tv_lagrima"},
+            {"text": "Entendido. Voy.", "next": "tv_cierre"}
+          ]
+        },
+        "tv_lagrima": {
+          "speaker": "TIA_VELAS",
+          "line": "Una lágrima de alguien que le deba algo al Quincallero. Alguien que todavía esté en el libro.",
+          "options": [
+            {"text": "¿Y si ese alguien no lo sabe?", "next": "tv_lagrima2"},
+            {"text": "¿La Pura está en el libro?", "next": "tv_lagrima3"},
+            {"text": "Entendido.", "next": "tv_cierre"}
+          ]
+        },
+        "tv_lagrima2": {
+          "speaker": "TIA_VELAS",
+          "line": "Las deudas se saben siempre. Lo que varía es cuándo se acepta saberlas.",
+          "options": [
+            {"text": "¿La Pura está en el libro?", "next": "tv_lagrima3"},
+            {"text": "De acuerdo. Empiezo por la cera.", "next": "tv_cierre"}
+          ]
+        },
+        "tv_lagrima3": {
+          "speaker": "TIA_VELAS",
+          "line": "Eso es lo que tienes que descubrir tú. Yo no leo libros ajenos.",
+          "options": [
+            {"text": "Entendido.", "next": "tv_cierre"}
+          ]
+        },
+        "tv_cierre": {
+          "speaker": "TIA_VELAS",
+          "line": "Cuando tengas todo, vuelves aquí. El exvoto se hace en esta venta, no en otro sitio.",
+          "options": []
+        }
+      }
+    },
+    "dialog_pratico": {
+      "start": "pr_inicio",
+      "nodes": {
+        "pr_inicio": {
+          "speaker": "EL_PRACTICO",
+          "line": "La cañada principal, sí, esa la cerraron. Pero hay tres portillos que el catastro no registró nunca. ¿Cuál te interesa?",
+          "options": [
+            {"text": "El que lleva a los bancales.", "next": "pr_bancales"},
+            {"text": "El que evita el camino de la Pura.", "next": "pr_rodeo"},
+            {"text": "¿Hay alguno cerca del registro?", "next": "pr_registro"}
+          ]
+        },
+        "pr_bancales": {
+          "speaker": "EL_PRACTICO",
+          "line": "Por donde el olivo partido, que está desde el año del pedrisco. Antes del pozo seco, a mano izquierda mirando al cerro. El portillo no tiene manija pero cede al segundo empujón.",
+          "options": [
+            {"text": "¿El segundo empujón, no el primero?", "next": "pr_bancales2"},
+            {"text": "Entendido. El olivo partido, izquierda.", "next": "pr_bancales3"},
+            {"text": "Pregunto por otro camino.", "next": "pr_rodeo"}
+          ]
+        },
+        "pr_bancales2": {
+          "speaker": "EL_PRACTICO",
+          "line": "El primero lo asentaron los que lo pusieron. El segundo lo abre quien sabe esperar. Que conste.",
+          "options": [
+            {"text": "Consta. ¿Y el rodeo de la Pura?", "next": "pr_rodeo"},
+            {"text": "De acuerdo. Voy a los bancales.", "next": "pr_cierre"}
+          ]
+        },
+        "pr_bancales3": {
+          "speaker": "EL_PRACTICO",
+          "line": "Correcto. Y cuando vuelvas, vas por el camino del majano de piedras, no por la acequia. La acequia la vigila ahora.",
+          "options": [
+            {"text": "¿La Pura vigila la acequia?", "next": "pr_rodeo"},
+            {"text": "De acuerdo.", "next": "pr_cierre"}
+          ]
+        },
+        "pr_rodeo": {
+          "speaker": "EL_PRACTICO",
+          "line": "Para evitar a la Pura, el camino del majano. Sale detrás de la venta, cruza el rastrojo, y llega al pueblo viejo por la espalda. Largo pero limpio.",
+          "options": [
+            {"text": "¿Cuánto tiempo añade?", "next": "pr_rodeo2"},
+            {"text": "¿Y por el registro?", "next": "pr_registro"},
+            {"text": "De acuerdo.", "next": "pr_cierre"}
+          ]
+        },
+        "pr_rodeo2": {
+          "speaker": "EL_PRACTICO",
+          "line": "Veinte minutos a paso normal. Pero con ese galgo tuyo que no corre, calcula media hora. Sin ofender al animal.",
+          "options": [
+            {"text": "No se ofende. ¿Y el registro?", "next": "pr_registro"},
+            {"text": "De acuerdo.", "next": "pr_cierre"}
+          ]
+        },
+        "pr_registro": {
+          "speaker": "EL_PRACTICO",
+          "line": "El sótano del registro tiene entrada propia por la parte de la higuera. La puerta está sin llave desde el ochenta y nueve. Nadie la ha vuelto a cerrar porque nadie quiere bajar.",
+          "options": [
+            {"text": "¿Por qué no quieren bajar?", "next": "pr_registro2"},
+            {"text": "Entendido. La higuera.", "next": "pr_cierre"}
+          ]
+        },
+        "pr_registro2": {
+          "speaker": "EL_PRACTICO",
+          "line": "Porque el que bajó en el ochenta y nueve a buscar un papel firmó otro sin querer. De eso no se habla pero se sabe.",
+          "options": [
+            {"text": "No voy a firmar nada.", "next": "pr_registro3"},
+            {"text": "De acuerdo. No bajo sin cuidado.", "next": "pr_cierre"}
+          ]
+        },
+        "pr_registro3": {
+          "speaker": "EL_PRACTICO",
+          "line": "Eso lo dicen todos antes de bajar.",
+          "options": [
+            {"text": "De acuerdo. Ya le cuento.", "next": "pr_cierre"}
+          ]
+        },
+        "pr_cierre": {
+          "speaker": "EL_PRACTICO",
+          "line": "Si te pierdes, mira al cerro. El camino que va hacia él siempre lleva a algún sitio. El que se aleja, también, pero a otro.",
+          "options": []
+        }
+      }
+    },
+    "dialog_pura": {
+      "start": "dp_inicio",
+      "nodes": {
+        "dp_inicio": {
+          "speaker": "DONA_PURA",
+          "line": "Señora Furriel. No esperaba encontrarla aquí. Esto es archivo municipal.",
+          "options": [
+            {"text": "Busco un dato del registro. Es público.", "next": "dp_registro"},
+            {"text": "La campanilla que embargó. Necesito hablar de eso.", "next": "dp_campanilla"},
+            {"text": "Quiero ver el libro de deudas.", "next": "dp_libro"}
+          ]
+        },
+        "dp_registro": {
+          "speaker": "DONA_PURA",
+          "line": "El registro es público en horario de oficina. Que no es este.",
+          "options": [
+            {"text": "Entonces quedamos mañana.", "next": "dp_manana"},
+            {"text": "Le muestro el cuaderno que encontré.", "next": "dp_cuaderno"},
+            {"text": "Hablo de la campanilla.", "next": "dp_campanilla"}
+          ]
+        },
+        "dp_manana": {
+          "speaker": "DONA_PURA",
+          "line": "Mañana a las nueve. Con cita previa. El formulario está en el tablón del ayuntamiento.",
+          "options": [
+            {"text": "De acuerdo. Pero antes, la campanilla.", "next": "dp_campanilla"},
+            {"text": "Le enseño el cuaderno ahora.", "next": "dp_cuaderno"}
+          ]
+        },
+        "dp_campanilla": {
+          "speaker": "DONA_PURA",
+          "line": "La campanilla estaba inventariada entre los bienes embargados del depósito viejo. Es un objeto de valor catastral. Se custodia hasta resolución del expediente.",
+          "options": [
+            {"text": "¿Sabe de quién era?", "next": "dp_campanilla2"},
+            {"text": "Le muestro el libro de deudas.", "next": "dp_libro"},
+            {"text": "Le enseño el cuaderno.", "next": "dp_cuaderno"}
+          ]
+        },
+        "dp_campanilla2": {
+          "speaker": "DONA_PURA",
+          "line": "Del inventario del depósito. Procedencia desconocida. Eso es lo que pone el acta.",
+          "options": [
+            {"text": "La procedencia no es desconocida. Le enseño el libro.", "next": "dp_libro"},
+            {"text": "¿Y si eso cambia el expediente?", "next": "dp_expediente"},
+            {"text": "Le muestro el cuaderno.", "next": "dp_cuaderno"}
+          ]
+        },
+        "dp_expediente": {
+          "speaker": "DONA_PURA",
+          "line": "Si hay documentación nueva que afecta al expediente, se presenta por escrito y se tramita.",
+          "options": [
+            {"text": "La documentación es este libro.", "next": "dp_libro"},
+            {"text": "De acuerdo.", "next": "dp_cierre_neutral"}
+          ]
+        },
+        "dp_libro": {
+          "speaker": "DONA_PURA",
+          "line": "¿Qué es esto?",
+          "options": [
+            {"text": "El libro de deudas del Quincallero. Mire la última página.", "next": "dp_libro2"}
+          ]
+        },
+        "dp_libro2": {
+          "speaker": "DONA_PURA",
+          "line": "Esto... estas páginas en blanco tienen mi nombre. Mi nombre no debería estar aquí.",
+          "options": [
+            {"text": "Nadie debería estar aquí. Y sin embargo.", "next": "dp_libro3"},
+            {"text": "No tiene que firmar nada que no quiera.", "next": "dp_libro4"}
+          ]
+        },
+        "dp_libro3": {
+          "speaker": "DONA_PURA",
+          "line": "Yo nunca traté con ese hombre. Nunca. Mis embargos son procedimiento legal.",
+          "options": [
+            {"text": "Los embargos suyos, sí. La campanilla, no.", "next": "dp_libro4"}
+          ]
+        },
+        "dp_libro4": {
+          "speaker": "DONA_PURA",
+          "line": "...",
+          "options": [
+            {"text": "Esperar en silencio.", "next": "dp_lagrima"}
+          ]
+        },
+        "dp_lagrima": {
+          "speaker": "DONA_PURA",
+          "line": "Haga lo que haya venido a hacer, señora Furriel. Y salga de aquí.",
+          "options": [
+            {"text": "Gracias. Eso es todo lo que necesitaba.", "next": "dp_cierre_final"}
+          ]
+        },
+        "dp_cuaderno": {
+          "speaker": "DONA_PURA",
+          "line": "¿Dónde encontró esto?",
+          "options": [
+            {"text": "En el olivo partido del bancal.", "next": "dp_cuaderno2"},
+            {"text": "Eso no importa. Lo que importa son los nombres.", "next": "dp_cuaderno2"}
+          ]
+        },
+        "dp_cuaderno2": {
+          "speaker": "DONA_PURA",
+          "line": "Estos nombres son del pueblo. Algunos ya no están.",
+          "options": [
+            {"text": "Los que están siguen en el libro de deudas.", "next": "dp_libro"},
+            {"text": "Por eso necesito ver el registro.", "next": "dp_registro"}
+          ]
+        },
+        "dp_cierre_neutral": {
+          "speaker": "DONA_PURA",
+          "line": "Buenos días, señora Furriel.",
+          "options": []
+        },
+        "dp_cierre_final": {
+          "speaker": "DONA_PURA",
+          "line": "Cierre al salir.",
+          "options": []
+        }
+      }
+    }
+  },
+  "combos": {
+    "fumigador|colmena": "Las aplaco con humo. No las disuado: las postpono. Que no es lo mismo.",
+    "fumigador|tia_velas": "Tía Velas me echa una mirada que pesa tres kilos. Guardo el fumigador.",
+    "fumigador|pura_escritorio": "Ahumar el escritorio no cancela el embargo. Lo he pensado igualmente.",
+    "fumigador|gato": "El gato da un salto digno y desaparece por el tejado. Perdí un aliado potencial.",
+    "fumigador|telar": "El telar protesta. La lanzadera brilla más. El humo lo enfadó.",
+    "tarro_vacio|pozo_seco": "El tarro recoge polvo de fondo de pozo. Útil para ninguna de las cosas que necesito.",
+    "tarro_vacio|colmena": "La abeja de turno opina que el tarro es territorio suyo.",
+    "tarro_vacio|barrica_miel": "La miel no es de bote. Es de barrica y de proceso. Tía Velas lo explica con la mirada.",
+    "tarro_vacio|pozo_seco": "Bajo el tarro. Sube polvo. El registro sigue vacío.",
+    "madeja_esparto|telar": "Si supiese tejer estaría en otra profesión. Menos pintoresca pero con más calefacción.",
+    "madeja_esparto|tijeras_oxidadas": "Las tijeras en mano, la madeja en la otra. Ahora corto. Así funciona.",
+    "madeja_esparto|rueca": "La madeja no va en la rueca. O va, pero no así, y no es el momento de aprenderlo.",
+    "chiflo|turbo": "Turbo abre un ojo, decide que no es para él, y lo cierra.",
+    "chiflo|melquiades": "Melquíades saca un catálogo. Seguro de instrumentos musicales de viento. Tiene cobertura para el chiflo.",
+    "chiflo|campanilla_caja": "Dos metales que no deberían sonar juntos. No sonarán. No los junto.",
+    "chiflo|pratico": "El Práctico para la anécdota, escucha el chiflo, y reanuda desde el principio.",
+    "cera_virgen|vela_sebo": "Esta cera no es para encender. Es para el exvoto. Explicárselo a la vela no ayuda.",
+    "cera_virgen|tia_velas": "Tía Velas la huele y asiente. Cera buena. Primera vez hoy que algo sale bien.",
+    "cera_virgen|colmena": "Devolver la cera a la colmena es de mal gusto cuando ellas se esforzaron tanto.",
+    "hilo_esparto|tia_velas": "Tía Velas enrolla el hilo y lo guarda en el mandil. Eso es un sí sin palabras.",
+    "hilo_esparto|cuaderno_antiguo": "Lo ato. El cuaderno no lo necesitaba. Yo sí necesitaba hacer algo con las manos.",
+    "papel_estraza|libro_deudas": "Copio el nombre con la letra más clara que tengo. No es mucho, pero es legible.",
+    "papel_estraza|retrato_quincallero": "El papel se niega a doblarse sobre el retrato. O lo noto yo. Guardo el papel.",
+    "cuaderno_antiguo|archivador": "El cuaderno encaja en el archivador como si siempre hubiera sido suyo. Quizás lo era.",
+    "lacre|señal_lacrada": "Añadir lacre al lacre no cancela el embargo. Lo sé y lo he intentado igualmente.",
+    "lacre|cuaderno_antiguo": "Sellar el cuaderno no lo hace más secreto. Ya lo es sin mi ayuda.",
+    "lacre|pura_escritorio": "Sellar su propio escritorio contra ella. No está mal como idea. No funciona, pero no está mal.",
+    "nombre_escrito|campanilla_caja": "El nombre escrito cerca de la campanilla hace algo. Paro antes de saber qué.",
+    "nombre_escrito|tia_velas": "Tía Velas lee el nombre en voz baja y cierra los ojos un momento. Luego los abre y sonríe poco.",
+    "bicicleta|camino_bloqueado": "La bici no traspasa precintos. Ni siquiera la muela de amolar da para eso.",
+    "turbo|camino_bloqueado": "Turbo se sienta delante de la cinta. Su contribución al debate está clara."
+  },
+  "cutscenes": {
+    "cs_apertura": {
+      "title": "La Llamada",
+      "beats": [
+        {"speaker": "NARRADOR", "line": "Sonido de disco de marcar. Timbre. Silencio."},
+        {"speaker": "PILI", "line": "Centralita municipal. Diga."},
+        {"speaker": "REME", "line": "Pili, soy Reme. Tengo una historia. Y tiempo."},
+        {"speaker": "PILI", "line": "¿Buena o de las que no se cuentan en la cooperativa?"},
+        {"speaker": "REME", "line": "De las que no se cuentan en ningún sitio. Por eso te llamo a ti."},
+        {"speaker": "PILI", "line": "Pues cuéntame. Tengo el turno hasta las diez."}
+      ]
+    },
+    "cs_embargo": {
+      "title": "El Embargo de la Pura",
+      "beats": [
+        {"speaker": "NARRADOR", "line": "La Pura clava el último lacre con eficiencia de cirujano."},
+        {"speaker": "DONA_PURA", "line": "Queda notificada, señora Furriel. Cuarenta y ocho horas para subsanar."},
+        {"speaker": "REME", "line": "¿Y si no hay nada que subsanar?"},
+        {"speaker": "DONA_PURA", "line": "Entonces procedo a la segunda diligencia. Buenos días."},
+        {"speaker": "REME", "line": "(narrando a Pili) La Pura se fue. El lacre quedó. Y yo me quedé mirando el camino cerrado."},
+        {"speaker": "PILI", "line": "¿Y Turbo?"},
+        {"speaker": "REME", "line": "Turbo se tumbó en mitad del camino. Su opinión sobre la burocracia."}
+      ]
+    },
+    "cs_llegada_venta": {
+      "title": "La Venta de Tía Velas",
+      "beats": [
+        {"speaker": "NARRADOR", "line": "Reme empuja la puerta de la venta. La campana de la entrada suena."},
+        {"speaker": "TIA_VELAS", "line": "Sabía que ibas a venir hoy."},
+        {"speaker": "REME", "line": "¿Cómo lo sabías?"},
+        {"speaker": "TIA_VELAS", "line": "Porque los jueves con tramontana pasan cosas. Y tú pasas cuando pasan cosas."},
+        {"speaker": "REME", "line": "(narrando) Tía Velas sabe todo lo que pasa en esa comarca antes de que pase."},
+        {"speaker": "PILI", "line": "¿Y te explicó lo del Quincallero?"},
+        {"speaker": "REME", "line": "Eso vino después. Primero llegó Melquíades con el seguro de embargo."},
+        {"speaker": "PILI", "line": "No."},
+        {"speaker": "REME", "line": "Sí. El seguro de embargo. Llegó tarde, como siempre."}
+      ]
+    },
+    "cs_pili_checkpoint": {
+      "title": "Pausa de Pili",
+      "beats": [
+        {"speaker": "PILI", "line": "Reme, para un momento."},
+        {"speaker": "REME", "line": "¿Qué?"},
+        {"speaker": "PILI", "line": "Que llevas veinte minutos y todavía no me has dicho qué es el exvoto."},
+        {"speaker": "REME", "line": "Una vela con forma. Hecha con cuatro cosas que no se consiguen juntas fácilmente."},
+        {"speaker": "PILI", "line": "¿Y funciona?"},
+        {"speaker": "REME", "line": "La cañada se abrió. Eso es lo que sé."},
+        {"speaker": "PILI", "line": "Eso no es una respuesta."},
+        {"speaker": "REME", "line": "Es la única que tengo."}
+      ]
+    },
+    "cs_exvoto_completo": {
+      "title": "El Exvoto Arde",
+      "beats": [
+        {"speaker": "NARRADOR", "line": "Tía Velas coloca los cuatro ingredientes en el molde. Los dedos no tiemblan."},
+        {"speaker": "TIA_VELAS", "line": "La cera virgen da el cuerpo. El hilo lo ata. El nombre lo apunta. La lágrima lo sella."},
+        {"speaker": "REME", "line": "¿Y ahora?"},
+        {"speaker": "TIA_VELAS", "line": "Ahora arde."},
+        {"speaker": "NARRADOR", "line": "La vela arde recta. El humo sube sin desviarse. La campana de la venta suena sola."},
+        {"speaker": "REME", "line": "(narrando) En ese momento no supe qué significaba la campana. Luego lo supe."}
+      ]
+    },
+    "cs_pura_huye": {
+      "title": "La Pura y la Campanilla",
+      "beats": [
+        {"speaker": "NARRADOR", "line": "El precinto de la cañada cae. Los lacres se deshacen solos."},
+        {"speaker": "REME", "line": "La cañada está abierta."},
+        {"speaker": "NARRADOR", "line": "Doña Pura recoge el maletín. Mete la campanilla entre los embargos. Se va."},
+        {"speaker": "REME", "line": "(narrando) Vi a la Pura irse. El maletín negro, los pasos cortos, el paso seguro."},
+        {"speaker": "PILI", "line": "¿Y la campanilla?"},
+        {"speaker": "REME", "line": "Eso fue lo que no vi a tiempo."},
+        {"speaker": "PILI", "line": "¿Qué no viste?"},
+        {"speaker": "REME", "line": "Que la Pura se la llevaba. Y que la campanilla estaba esperando exactamente eso."}
+      ]
+    },
+    "cs_resurreccion": {
+      "title": "La Campanilla Suena",
+      "beats": [
+        {"speaker": "NARRADOR", "line": "A cien metros, algo en el maletín vibra."},
+        {"speaker": "NARRADOR", "line": "La campanilla suena. Una vez."},
+        {"speaker": "REME", "line": "Fue entonces cuando me di cuenta de que habíamos ganado la batalla equivocada."},
+        {"speaker": "PILI", "line": "Reme. ¿La campanilla sonó?"},
+        {"speaker": "REME", "line": "Sonó, Pili. Y lo que vino después ya no es historia de esta noche."},
+        {"speaker": "PILI", "line": "Reme."},
+        {"speaker": "REME", "line": "Mañana te cuento el Capítulo Dos. Si hay centralita."},
+        {"speaker": "NARRADOR", "line": "Pantalla a negro. Fin del Capítulo 1: La Cañada Cerrada."}
+      ]
+    }
+  },
+  "goals": {
+    "goal_canada": {
+      "description": "Abrir la cañada cerrada",
+      "hint": "La cañada tiene un precinto. El precinto tiene un origen. El origen tiene un nombre.",
+      "completed_by": "cs_exvoto_completo"
+    },
+    "goal_exvoto": {
+      "description": "Completar el exvoto de cera con los cuatro ingredientes",
+      "hint": "Tía Velas sabe cómo. Los ingredientes están repartidos. Hay que ganárselos.",
+      "completed_by": "cs_exvoto_completo"
+    },
+    "goal_cera": {
+      "description": "Conseguir la cera virgen de la colmena",
+      "hint": "La colmena está en los bancales. Hay que llegar primero.",
+      "completed_by": "item_cera_virgen"
+    },
+    "goal_hilo": {
+      "description": "Conseguir el hilo de esparto del telar",
+      "hint": "La madeja está en el telar. El acceso al telar se gana con trabajo previo.",
+      "completed_by": "item_hilo_esparto"
+    },
+    "goal_nombre": {
+      "description": "Descubrir el nombre verdadero del Quincallero",
+      "hint": "El registro sabe cosas que el pueblo olvidó. O que prefirió olvidar.",
+      "completed_by": "item_nombre_escrito"
+    },
+    "goal_lagrima": {
+      "description": "Obtener una lágrima de alguien en deuda con el Quincallero",
+      "hint": "El libro de deudas tiene páginas en blanco. Las páginas en blanco tienen nombres.",
+      "completed_by": "item_lagrima"
+    }
+  }
+}

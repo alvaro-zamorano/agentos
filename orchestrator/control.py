@@ -79,6 +79,17 @@ create policy agentos_heartbeat_select on public.agentos_heartbeat
 grant select on public.agentos_heartbeat to anon;
 insert into public.agentos_heartbeat (id, status) values (1, 'init')
   on conflict (id) do nothing;
+
+create table if not exists public.agentos_logs (
+  id bigint generated always as identity primary key,
+  ts timestamptz not null default now(),
+  mission_id text, level text, node text, iteration int, msg text
+);
+alter table public.agentos_logs enable row level security;
+drop policy if exists agentos_logs_select on public.agentos_logs;
+create policy agentos_logs_select on public.agentos_logs for select to anon using (true);
+grant select on public.agentos_logs to anon;
+create index if not exists agentos_logs_ts on public.agentos_logs (ts desc);
 """.replace("%PASS%", PASS.replace("'", "''"))
 
 
@@ -140,6 +151,22 @@ def finish_command(cmd_id, result: str = "ok") -> None:
         return
     try:
         _req("DELETE", f"/rest/v1/agentos_commands?id=eq.{cmd_id}")
+    except Exception:
+        pass
+
+
+# ---------------------------------------------------------------- log stream (SDK en vivo)
+def push_log(mission_id: str, level: str, msg, node=None, iteration=None) -> None:
+    """Apunta un evento en agentos_logs (el stream que ve el dashboard en directo): inicio,
+    cada paso del SDK (con su salida real), verify, gate, abort, done, error."""
+    url, key = _supa()
+    if not (url and key):
+        return
+    row = {"mission_id": mission_id, "level": level,
+           "msg": (str(msg)[:2000] if msg else None), "node": node,
+           "iteration": iteration, "ts": datetime.now(timezone.utc).isoformat()}
+    try:
+        _req("POST", "/rest/v1/agentos_logs", body=[row])
     except Exception:
         pass
 
