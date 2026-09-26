@@ -21,7 +21,7 @@ from __future__ import annotations
 import os, json, urllib.request, urllib.error, urllib.parse
 from datetime import datetime, timezone
 
-PASS = os.environ.get("DASH_PASS", "Queso2025")  # contraseña del dashboard (RLS la valida)
+PASS = os.environ.get("DASH_PASS", "")  # sin valor por defecto: el canal anónimo está cerrado (auditoría 2026-09-26)
 _FREEZE_FLAG = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                             "state", "_FROZEN")
 
@@ -49,6 +49,8 @@ alter table public.agentos_missions add column if not exists node text;
 alter table public.agentos_missions add column if not exists last_action text;
 alter table public.agentos_missions add column if not exists dod jsonb;
 alter table public.agentos_missions add column if not exists note text;
+alter table public.agentos_missions enable row level security;
+revoke all on public.agentos_missions from anon, authenticated;
 
 create table if not exists public.agentos_commands (
   id bigint generated always as identity primary key,
@@ -62,9 +64,7 @@ create table if not exists public.agentos_commands (
 );
 alter table public.agentos_commands enable row level security;
 drop policy if exists agentos_commands_insert on public.agentos_commands;
-create policy agentos_commands_insert on public.agentos_commands
-  for insert to anon with check (pass = '%PASS%');
-grant insert on public.agentos_commands to anon;
+revoke all on public.agentos_commands from anon, authenticated;
 
 create table if not exists public.agentos_heartbeat (
   id int primary key default 1,
@@ -74,9 +74,7 @@ create table if not exists public.agentos_heartbeat (
 );
 alter table public.agentos_heartbeat enable row level security;
 drop policy if exists agentos_heartbeat_select on public.agentos_heartbeat;
-create policy agentos_heartbeat_select on public.agentos_heartbeat
-  for select to anon using (true);
-grant select on public.agentos_heartbeat to anon;
+revoke all on public.agentos_heartbeat from anon, authenticated;
 insert into public.agentos_heartbeat (id, status) values (1, 'init')
   on conflict (id) do nothing;
 
@@ -87,8 +85,7 @@ create table if not exists public.agentos_logs (
 );
 alter table public.agentos_logs enable row level security;
 drop policy if exists agentos_logs_select on public.agentos_logs;
-create policy agentos_logs_select on public.agentos_logs for select to anon using (true);
-grant select on public.agentos_logs to anon;
+revoke all on public.agentos_logs from anon, authenticated;
 create index if not exists agentos_logs_ts on public.agentos_logs (ts desc);
 """.replace("%PASS%", PASS.replace("'", "''"))
 
