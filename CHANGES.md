@@ -287,7 +287,7 @@ Supabase, un access-token; (c) OJO el proyecto Supabase es COMPARTIDO -> valorar
 
 ## Supabase dedicado (2026-06-17, run 12)
 
-40. **Proyecto Supabase DEDICADO** (cuenta shortsinteresante123, ref wxxezbvgoqsxgfpfgefp) en vez
+40. **Proyecto Supabase DEDICADO** (cuenta <cuenta dedicada>, ref wxxezbvgoqsxgfpfgefp) en vez
     del compartido -> aísla a AgentOS (riesgo de tocar tablas de otros proyectos resuelto).
     .env: SUPABASE_URL + SUPABASE_PROJECT_REF al proyecto dedicado; anon key vaciada (el agente
     la obtiene por MCP). Falta SUPABASE_ACCESS_TOKEN (lo genera Álvaro en account/tokens) para
@@ -377,7 +377,7 @@ pasar solo si coincide y NO permite leerlas (las consume el daemon con service k
     - `push_heartbeat()`: latido (vivo/idle/running/waiting_gate/frozen + misión activa).
     - `gate_decision()`: GO/NO de un gate llegado desde el dashboard.
     - freeze flag local.
-49. **Login por contraseña (Queso2025).** Gate de pantalla completa; compara SHA-256 (el
+49. **Login por contraseña (<contraseña retirada 2026-09-26>).** Gate de pantalla completa; compara SHA-256 (el
     plano NO está en el cliente, solo el hash). Tras acertar, la contraseña vive en memoria
     y viaja (HTTPS) en cada inserción de comando, donde RLS la vuelve a validar.
 50. **Acciones (bundle 1).** Por misión: Abortar (mata la activa EN CALIENTE desde el
@@ -438,7 +438,7 @@ claude.ai sin procesarse. Diagnóstico real:
 57. **Cloudflare bloquea la huella de Python (urllib) en api.supabase.com (403/1010), NO la
     de curl.** Por eso ensure_schema fallaba desde el Mac Y el sandbox. FIX: ensure_schema
     ahora usa `curl` (subprocess) + recarga la caché de PostgREST. Y creé las tablas YA por
-    curl desde aquí (commands+heartbeat+columnas). Canal verificado: insert Queso2025->201,
+    curl desde aquí (commands+heartbeat+columnas). Canal verificado: insert <contraseña retirada 2026-09-26>->201,
     contraseña mala->401 (RLS protege).
 58. **El daemon estaba VIVO pero FROZEN.** El heartbeat (ya con tabla) lo delató: status=
     frozen. Causa: el `_FROZEN` que dejé en state/ de un test se copió a ~/agentos/state/ en
