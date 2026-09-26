@@ -208,7 +208,7 @@
 <div id="toast"></div>
 
 <script>
-const SUPA_URL="https://wxxezbvgoqsxgfpfgefp.supabase.co", SUPA_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind4eGV6YnZnb3FzeGdmcGZnZWZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgwMDk3MDksImV4cCI6MjA2MzU4NTcwOX0.sl0IF30YJwVepCxmegtaQ6XAW0Gz1SNIbm50vJ9iHns", PASS_HASH="58d7ffc0dd8c5713c1edd901a13a4b2624ba8cc2c34327544bc64f8450ed753e";
+const SUPA_URL=(localStorage.getItem("agentos_supa_url")||""), SUPA_KEY=(localStorage.getItem("agentos_supa_key")||""), PASS_HASH=""; // auditoría 2026-09-26: sin credenciales en el código; canal anónimo cerrado en Supabase
 let MISS=[], HB=null, NOTE={}, LOGS=[], FILTER="all", LVF="all", OPEN=new Set(), MLOGS={}, EXP=new Set();
 
 async function sha256(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));
