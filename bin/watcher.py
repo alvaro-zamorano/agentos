@@ -517,6 +517,8 @@ def _apply_command(cmd: dict) -> str:
     from orchestrator import metrics, control
     act = cmd.get("action", ""); mid = (cmd.get("mission_id") or "").strip()
     args = cmd.get("args") or {}
+    if act in ("enqueue", "approve_gate", "reject_gate"):  # auditoría 2026-09-26
+        return f"{act}: deshabilitado por seguridad (canal del dashboard cerrado)"
     if act in ("freeze", "unfreeze"):
         control.set_frozen(act == "freeze")
         return f"daemon {'congelado' if act=='freeze' else 'descongelado'}"
